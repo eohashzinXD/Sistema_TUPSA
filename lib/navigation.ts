@@ -51,7 +51,7 @@ export const dashboardNavigation: NavigationItem[] = [
   {
     title: "Cronogramas",
     href: "/dashboard/cronogramas",
-    description: "Festas, amacis e giras do mÃªs",
+    description: "Festas, amacis e giras do mês",
     icon: "calendar-days",
     permissions: ["schedules:read"]
   },

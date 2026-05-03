@@ -85,10 +85,10 @@ export default async function SchedulesPage({
           Cronogramas
         </p>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-          Festas, amacis e giras do mÃªs
+          Festas, amacis e giras do mês
         </h1>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          Filtre por mÃªs e abra o cronograma pelo tipo. Apenas o pai de santo
+          Filtre por mês e abra o cronograma pelo tipo. Apenas o pai de santo
           pode substituir as imagens publicadas.
         </p>
       </section>

@@ -10,7 +10,7 @@ export const scheduleTypes = [
 export const scheduleTypeLabels: Record<ScheduleType, string> = {
   FESTAS: "Festas",
   AMACIS: "Amacis",
-  GIRAS: "Giras do mÃªs"
+  GIRAS: "Giras do mês"
 };
 
 export const scheduleMonthSchema = z.object({

@@ -123,7 +123,7 @@ export function ScheduleBoard({
     <div className="grid gap-5 lg:grid-cols-[280px_1fr]">
       <Card className="space-y-5 p-5">
         <label className="block space-y-2">
-          <span className="text-sm font-medium">MÃªs</span>
+          <span className="text-sm font-medium">Mês</span>
           <input
             className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-primary"
             defaultValue={monthValue}
@@ -263,7 +263,7 @@ export function ScheduleBoard({
                   Nenhum cronograma publicado
                 </p>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  Selecione outro mÃªs ou aguarde o pai de santo enviar a imagem.
+                  Selecione outro Mês ou aguarde o pai de santo enviar a imagem.
                 </p>
               </div>
             </div>
