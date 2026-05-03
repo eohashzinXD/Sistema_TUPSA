@@ -7,6 +7,7 @@ export type NavigationIcon =
   | "folder"
   | "home"
   | "megaphone"
+  | "settings"
   | "wallet"
   | "music"
   | "users";
@@ -91,7 +92,14 @@ export const dashboardNavigation: NavigationItem[] = [
     permissions: ["users:manage"]
   },
   {
-    title: "Notificações",
+    title: "Configuracoes",
+    href: "/dashboard/configuracoes",
+    description: "Nome e logo do terreiro",
+    icon: "settings",
+    permissions: ["settings:manage"]
+  },
+  {
+    title: "Notificacoes",
     href: "/dashboard/notificacoes",
     description: "Leitura e envio de comunicados",
     icon: "bell",

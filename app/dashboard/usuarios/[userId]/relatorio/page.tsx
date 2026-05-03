@@ -1,14 +1,12 @@
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { auth } from "@/auth";
-import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { PrintReportButton } from "@/components/users/print-report-button";
+import { ReportHeader } from "@/components/users/report-header";
 import { UserReport } from "@/components/users/user-report";
 import { hasPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
-import { cn } from "@/lib/utils";
+import { getSystemSettings } from "@/lib/settings";
 
 type UserReportPageProps = {
   params: {
@@ -92,7 +90,10 @@ export default async function UserReportPage({ params }: UserReportPageProps) {
     return <AccessDenied />;
   }
 
-  const user = await getUserReportData(params.userId);
+  const [user, settings] = await Promise.all([
+    getUserReportData(params.userId),
+    getSystemSettings()
+  ]);
   if (!user) notFound();
 
   return (
@@ -126,32 +127,11 @@ export default async function UserReportPage({ params }: UserReportPageProps) {
           `
         }}
       />
-      <section className="flex flex-col gap-4 rounded-3xl border border-border bg-card p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between print:border-0 print:p-0 print:shadow-none">
-        <div>
-          <p className="text-sm font-medium uppercase tracking-[0.24em] text-muted-foreground">
-            Relatorio
-          </p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-            Cadastro de {user.name}
-          </h1>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Emitido em{" "}
-            {new Intl.DateTimeFormat("pt-BR", {
-              dateStyle: "short",
-              timeStyle: "short"
-            }).format(new Date())}
-          </p>
-        </div>
-        <div className="print-hidden flex flex-wrap gap-2">
-          <Link
-            className={cn(buttonVariants({ variant: "outline" }))}
-            href="/dashboard/usuarios"
-          >
-            Voltar
-          </Link>
-          <PrintReportButton />
-        </div>
-      </section>
+      <ReportHeader
+        backHref="/dashboard/usuarios"
+        settings={settings}
+        title={`Cadastro de ${user.name}`}
+      />
 
       <UserReport users={[user]} />
     </div>

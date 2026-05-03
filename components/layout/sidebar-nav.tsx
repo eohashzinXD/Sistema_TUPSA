@@ -10,6 +10,7 @@ import {
   Home,
   Megaphone,
   Music2,
+  Settings,
   Users,
   WalletCards
 } from "lucide-react";
@@ -34,6 +35,7 @@ const navigationIcons: Record<NavigationIcon, typeof Home> = {
   home: Home,
   megaphone: Megaphone,
   music: Music2,
+  settings: Settings,
   users: Users,
   wallet: WalletCards
 };

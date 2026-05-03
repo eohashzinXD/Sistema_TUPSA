@@ -1,14 +1,12 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/auth";
-import { PrintReportButton } from "@/components/users/print-report-button";
+import { ReportHeader } from "@/components/users/report-header";
 import { UserReport } from "@/components/users/user-report";
-import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { hasPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
-import { cn } from "@/lib/utils";
+import { getSystemSettings } from "@/lib/settings";
 
 async function getUsersReportData() {
   return prisma.user.findMany({
@@ -86,7 +84,10 @@ export default async function UsersReportPage() {
     return <AccessDenied />;
   }
 
-  const users = await getUsersReportData();
+  const [users, settings] = await Promise.all([
+    getUsersReportData(),
+    getSystemSettings()
+  ]);
 
   return (
     <div className="print-report mx-auto max-w-5xl space-y-6">
@@ -119,32 +120,11 @@ export default async function UsersReportPage() {
           `
         }}
       />
-      <section className="flex flex-col gap-4 rounded-3xl border border-border bg-card p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between print:border-0 print:p-0 print:shadow-none">
-        <div>
-          <p className="text-sm font-medium uppercase tracking-[0.24em] text-muted-foreground">
-            Relatorio
-          </p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-            Cadastro de usuarios
-          </h1>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Emitido em{" "}
-            {new Intl.DateTimeFormat("pt-BR", {
-              dateStyle: "short",
-              timeStyle: "short"
-            }).format(new Date())}
-          </p>
-        </div>
-        <div className="print-hidden flex flex-wrap gap-2">
-          <Link
-            className={cn(buttonVariants({ variant: "outline" }))}
-            href="/dashboard/usuarios"
-          >
-            Voltar
-          </Link>
-          <PrintReportButton />
-        </div>
-      </section>
+      <ReportHeader
+        backHref="/dashboard/usuarios"
+        settings={settings}
+        title="Cadastro de usuarios"
+      />
 
       <UserReport users={users} />
     </div>

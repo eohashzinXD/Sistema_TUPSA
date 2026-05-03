@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { Badge } from "@/components/ui/badge";
 import { orixaLabels, type OrixaCode } from "@/lib/amaci";
 
@@ -156,7 +158,7 @@ function ReportSection({
   children
 }: {
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <section className="mt-4">

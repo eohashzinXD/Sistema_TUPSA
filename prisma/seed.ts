@@ -21,6 +21,7 @@ const permissions = [
   ["monthly-fees:manage", "Gerenciar mensalidades dos filhos"],
   ["schedules:read", "Visualizar cronogramas mensais"],
   ["schedules:manage", "Gerenciar cronogramas mensais"],
+  ["settings:manage", "Gerenciar configuracoes do terreiro"],
   ["categories:manage", "Gerenciar categorias e subcategorias"],
   ["notifications:read", "Visualizar comunicados"],
   ["notifications:create", "Enviar comunicados internos"],

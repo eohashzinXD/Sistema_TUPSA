@@ -279,6 +279,15 @@ model Schedule {
   @@map("schedules")
 }
 
+model SystemSettings {
+  id         String   @id @default("terreiro")
+  templeName String   @default("TUPSA")
+  logoUrl    String?
+  updatedAt  DateTime @updatedAt
+
+  @@map("system_settings")
+}
+
 model ContentVisibility {
   id          String            @id @default(cuid())
   contentId   String
