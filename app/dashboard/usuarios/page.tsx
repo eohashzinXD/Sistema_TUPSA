@@ -19,7 +19,21 @@ async function getUsers() {
       email: true,
       phone: true,
       address: true,
+      maritalStatus: true,
+      hasAllergies: true,
+      allergies: true,
+      usesContinuousMedication: true,
+      continuousMedication: true,
+      umbandaStartDate: true,
       active: true,
+      headOrixa: true,
+      adjuntoOrixa: true,
+      frontEntity: true,
+      baptismDate: true,
+      coronationDate: true,
+      deitadaCount: true,
+      rightObligations: true,
+      leftObligations: true,
       monthlyFeeExempt: true,
       createdAt: true,
       roles: {
@@ -51,6 +65,12 @@ async function getUsers() {
       }
     }
   });
+}
+
+function formatDate(date: Date) {
+  return new Intl.DateTimeFormat("pt-BR", {
+    dateStyle: "short"
+  }).format(date);
 }
 
 export default async function UsersPage() {
@@ -125,6 +145,76 @@ export default async function UsersPage() {
                     </span>{" "}
                     {user.address ?? "Não informado"}
                   </p>
+                  <p>
+                    <span className="font-medium text-foreground">
+                      Estado civil:
+                    </span>{" "}
+                    {user.maritalStatus ?? "Não informado"}
+                  </p>
+                  <p>
+                    <span className="font-medium text-foreground">
+                      Início na Umbanda:
+                    </span>{" "}
+                    {user.umbandaStartDate
+                      ? formatDate(user.umbandaStartDate)
+                      : "Não informado"}
+                  </p>
+                  <p>
+                    <span className="font-medium text-foreground">
+                      Alergias:
+                    </span>{" "}
+                    {user.hasAllergies
+                      ? user.allergies ?? "Sim, sem detalhes"
+                      : "Não"}
+                  </p>
+                  <p>
+                    <span className="font-medium text-foreground">
+                      Medicação contínua:
+                    </span>{" "}
+                    {user.usesContinuousMedication
+                      ? user.continuousMedication ?? "Sim, sem detalhes"
+                      : "Não"}
+                  </p>
+                </div>
+                <div className="mt-4 grid gap-2 text-sm text-muted-foreground md:grid-cols-2">
+                  <p>
+                    <span className="font-medium text-foreground">
+                      Entidade de frente:
+                    </span>{" "}
+                    {user.frontEntity ?? "Não informado"}
+                  </p>
+                  <p>
+                    <span className="font-medium text-foreground">
+                      Deitadas do orixá de frente:
+                    </span>{" "}
+                    {user.deitadaCount}/7
+                  </p>
+                  <p>
+                    <span className="font-medium text-foreground">
+                      Batismo:
+                    </span>{" "}
+                    {user.baptismDate
+                      ? formatDate(user.baptismDate)
+                      : "Não informado"}
+                  </p>
+                  <p>
+                    <span className="font-medium text-foreground">
+                      Coroação:
+                    </span>{" "}
+                    {user.coronationDate
+                      ? formatDate(user.coronationDate)
+                      : "Não informado"}
+                  </p>
+                </div>
+                <div className="mt-4 grid gap-3 text-sm md:grid-cols-2">
+                  <MetaGroup
+                    label="Obrigações de direita"
+                    values={user.rightObligations}
+                  />
+                  <MetaGroup
+                    label="Obrigações de esquerda"
+                    values={user.leftObligations}
+                  />
                 </div>
                 <div className="mt-4 grid gap-3 text-sm md:grid-cols-3">
                   <MetaGroup

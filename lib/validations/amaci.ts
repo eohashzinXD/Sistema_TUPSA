@@ -13,8 +13,8 @@ export const updateDeitadaCountSchema = z.object({
   deitadaCount: z.coerce
     .number()
     .int()
-    .min(0, "Informe de 0 a 10 deitadas")
-    .max(10, "Informe no máximo 10 deitadas")
+    .min(0, "Informe de 0 a 7 deitadas")
+    .max(7, "Informe no máximo 7 deitadas")
 });
 
 export type ToggleAmaciBathInput = z.infer<typeof toggleAmaciBathSchema>;

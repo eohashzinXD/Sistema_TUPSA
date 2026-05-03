@@ -6,6 +6,10 @@ import { UserForm } from "@/components/users/user-form";
 import { orixaOptions, type OrixaCode } from "@/lib/amaci";
 import { hasPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
+import {
+  leftObligationOptions,
+  rightObligationOptions
+} from "@/lib/validations/users";
 
 type EditUserPageProps = {
   params: {
@@ -23,10 +27,22 @@ async function getFormData(userId: string) {
         email: true,
         phone: true,
         address: true,
+        maritalStatus: true,
+        hasAllergies: true,
+        allergies: true,
+        usesContinuousMedication: true,
+        continuousMedication: true,
+        umbandaStartDate: true,
         active: true,
         headOrixa: true,
+        adjuntoOrixa: true,
+        frontEntity: true,
+        baptismDate: true,
+        coronationDate: true,
         hasAmaci: true,
         deitadaCount: true,
+        rightObligations: true,
+        leftObligations: true,
         monthlyFeeExempt: true,
         amaciBaths: {
           select: {
@@ -84,6 +100,28 @@ function normalizeHeadOrixa(headOrixa: string | null): OrixaCode | null {
   return null;
 }
 
+function toDateInputValue(date: Date | null): string {
+  return date ? date.toISOString().slice(0, 10) : "";
+}
+
+function normalizeRightObligations(values: string[]) {
+  return values.filter(
+    (value): value is (typeof rightObligationOptions)[number] =>
+      rightObligationOptions.includes(
+        value as (typeof rightObligationOptions)[number]
+      )
+  );
+}
+
+function normalizeLeftObligations(values: string[]) {
+  return values.filter(
+    (value): value is (typeof leftObligationOptions)[number] =>
+      leftObligationOptions.includes(
+        value as (typeof leftObligationOptions)[number]
+      )
+  );
+}
+
 export default async function EditUserPage({ params }: EditUserPageProps) {
   const session = await auth();
   if (!session) redirect("/login");
@@ -114,8 +152,18 @@ export default async function EditUserPage({ params }: EditUserPageProps) {
           password: "",
           phone: data.user.phone,
           address: data.user.address,
+          maritalStatus: data.user.maritalStatus,
+          hasAllergies: data.user.hasAllergies,
+          allergies: data.user.allergies,
+          usesContinuousMedication: data.user.usesContinuousMedication,
+          continuousMedication: data.user.continuousMedication,
+          umbandaStartDate: toDateInputValue(data.user.umbandaStartDate),
           active: data.user.active,
           headOrixa: normalizeHeadOrixa(data.user.headOrixa),
+          adjuntoOrixa: normalizeHeadOrixa(data.user.adjuntoOrixa),
+          frontEntity: data.user.frontEntity,
+          baptismDate: toDateInputValue(data.user.baptismDate),
+          coronationDate: toDateInputValue(data.user.coronationDate),
           hasAmaci: data.user.hasAmaci,
           amaciOrixas: data.user.amaciBaths
             .map((item) => normalizeHeadOrixa(item.orixa))
@@ -123,6 +171,10 @@ export default async function EditUserPage({ params }: EditUserPageProps) {
               Boolean(orixa)
             ),
           deitadaCount: data.user.deitadaCount,
+          rightObligations: normalizeRightObligations(
+            data.user.rightObligations
+          ),
+          leftObligations: normalizeLeftObligations(data.user.leftObligations),
           monthlyFeeExempt: data.user.monthlyFeeExempt,
           roleIds: data.user.roles.map((item) => item.roleId),
           groupIds: data.user.groups.map((item) => item.groupId),

@@ -48,6 +48,10 @@ function normalizeAmaciOrixas(ids: string[]): string[] {
   );
 }
 
+function parseDateInput(value: string | null | undefined): Date | null {
+  return value ? new Date(`${value}T00:00:00`) : null;
+}
+
 export async function createUserAction(
   input: CreateUserInput
 ): Promise<UserActionResult> {
@@ -83,10 +87,24 @@ export async function createUserAction(
       password,
       phone: parsed.data.phone,
       address: parsed.data.address,
+      maritalStatus: parsed.data.maritalStatus,
+      hasAllergies: parsed.data.hasAllergies,
+      allergies: parsed.data.hasAllergies ? parsed.data.allergies : null,
+      usesContinuousMedication: parsed.data.usesContinuousMedication,
+      continuousMedication: parsed.data.usesContinuousMedication
+        ? parsed.data.continuousMedication
+        : null,
+      umbandaStartDate: parseDateInput(parsed.data.umbandaStartDate),
       active: parsed.data.active,
       headOrixa: parsed.data.headOrixa,
+      adjuntoOrixa: parsed.data.adjuntoOrixa,
+      frontEntity: parsed.data.frontEntity,
+      baptismDate: parseDateInput(parsed.data.baptismDate),
+      coronationDate: parseDateInput(parsed.data.coronationDate),
       hasAmaci: parsed.data.hasAmaci,
       deitadaCount: parsed.data.deitadaCount,
+      rightObligations: parsed.data.rightObligations,
+      leftObligations: parsed.data.leftObligations,
       monthlyFeeExempt: parsed.data.monthlyFeeExempt,
       roles: {
         createMany: {
@@ -166,10 +184,24 @@ export async function updateUserAction(
         email: parsed.data.email,
         phone: parsed.data.phone,
         address: parsed.data.address,
+        maritalStatus: parsed.data.maritalStatus,
+        hasAllergies: parsed.data.hasAllergies,
+        allergies: parsed.data.hasAllergies ? parsed.data.allergies : null,
+        usesContinuousMedication: parsed.data.usesContinuousMedication,
+        continuousMedication: parsed.data.usesContinuousMedication
+          ? parsed.data.continuousMedication
+          : null,
+        umbandaStartDate: parseDateInput(parsed.data.umbandaStartDate),
         active: parsed.data.active,
         headOrixa: parsed.data.headOrixa,
+        adjuntoOrixa: parsed.data.adjuntoOrixa,
+        frontEntity: parsed.data.frontEntity,
+        baptismDate: parseDateInput(parsed.data.baptismDate),
+        coronationDate: parseDateInput(parsed.data.coronationDate),
         hasAmaci: parsed.data.hasAmaci,
         deitadaCount: parsed.data.deitadaCount,
+        rightObligations: parsed.data.rightObligations,
+        leftObligations: parsed.data.leftObligations,
         monthlyFeeExempt: parsed.data.monthlyFeeExempt,
         ...(password ? { password } : {})
       }

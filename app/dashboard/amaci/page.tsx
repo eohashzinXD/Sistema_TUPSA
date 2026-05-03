@@ -104,7 +104,7 @@ export default async function AmaciPage() {
         </h1>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
           Marque os banhos tomados para cada orixá. O pai de santo pode atualizar
-          todos os filhos; cada filho pode atualizar o próprio controle.
+          todos os filhos.
         </p>
       </section>
 
@@ -112,7 +112,6 @@ export default async function AmaciPage() {
         {users.map((user) => (
           <AmaciUserCard
             canManage={canManage}
-            currentUserId={session.user.id}
             key={user.id}
             user={user}
           />
@@ -124,11 +123,9 @@ export default async function AmaciPage() {
 
 function AmaciUserCard({
   canManage,
-  currentUserId,
   user
 }: {
   canManage: boolean;
-  currentUserId: string;
   user: AmaciUser;
 }) {
   const bathsByOrixa = new Map(
@@ -139,7 +136,7 @@ function AmaciUserCard({
       .map((bath) => [bath.orixa, bath])
   );
   const completedCount = bathsByOrixa.size;
-  const canToggle = canManage || currentUserId === user.id;
+  const canToggle = canManage;
 
   return (
     <Card className="p-5">
@@ -149,7 +146,7 @@ function AmaciUserCard({
           <p className="mt-1 text-sm text-muted-foreground">{user.email}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             <Badge className="bg-card">
-              Pai de cabeça:{" "}
+              Orixá de cabeça:{" "}
               {user.headOrixa && user.headOrixa in orixaLabels
                 ? orixaLabels[user.headOrixa as OrixaCode]
                 : "não informado"}
@@ -157,8 +154,8 @@ function AmaciUserCard({
             <Badge className={user.hasAmaci ? "" : "bg-card"}>
               {user.hasAmaci ? "Tem amaci" : "Sem amaci"}
             </Badge>
-            <Badge className={user.deitadaCount >= 10 ? "" : "bg-card"}>
-              {user.deitadaCount}/10 deitadas
+            <Badge className={user.deitadaCount >= 7 ? "" : "bg-card"}>
+              {user.deitadaCount}/7 deitadas
             </Badge>
           </div>
         </div>
@@ -171,9 +168,9 @@ function AmaciUserCard({
         <div className="mt-5 rounded-2xl border border-border bg-background p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="font-semibold">Deitadas do pai de cabeça</p>
+              <p className="font-semibold">Deitadas do orixá de frente</p>
               <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                Progresso obrigatório: {user.deitadaCount}/10
+                Progresso obrigatório: {user.deitadaCount}/7
               </p>
             </div>
             <div className="flex gap-2">
@@ -199,11 +196,11 @@ function AmaciUserCard({
                   "use server";
                   await updateDeitadaCountAction({
                     userId: user.id,
-                    deitadaCount: Math.min(10, user.deitadaCount + 1)
+                    deitadaCount: Math.min(7, user.deitadaCount + 1)
                   });
                 }}
               >
-                <Button disabled={user.deitadaCount >= 10} type="submit">
+                <Button disabled={user.deitadaCount >= 7} type="submit">
                   +1
                 </Button>
               </form>

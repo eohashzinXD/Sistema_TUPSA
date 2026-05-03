@@ -4,9 +4,27 @@ import { orixaOptions } from "@/lib/amaci";
 
 const relationIdsSchema = z.array(z.string().min(1)).default([]);
 const amaciOrixasSchema = z.array(z.enum(orixaOptions)).default([]);
+export const rightObligationOptions = ["Mata", "Cachoeira", "Praia"] as const;
+export const leftObligationOptions = [
+  "Encruzilhada",
+  "Cemitério",
+  "Mata",
+  "Praia"
+] as const;
+const rightObligationsSchema = z
+  .array(z.enum(rightObligationOptions))
+  .default([]);
+const leftObligationsSchema = z.array(z.enum(leftObligationOptions)).default([]);
 const optionalTextSchema = z
   .string()
   .trim()
+  .transform((value) => (value.length > 0 ? value : null))
+  .nullable()
+  .optional();
+const optionalDateSchema = z
+  .string()
+  .trim()
+  .regex(/^\d{4}-\d{2}-\d{2}$|^$/, "Informe uma data válida")
   .transform((value) => (value.length > 0 ? value : null))
   .nullable()
   .optional();
@@ -18,8 +36,8 @@ const headOrixaSchema = z
 const deitadaCountSchema = z.coerce
   .number()
   .int("Informe um número inteiro")
-  .min(0, "Informe de 0 a 10 deitadas")
-  .max(10, "Informe no máximo 10 deitadas")
+  .min(0, "Informe de 0 a 7 deitadas")
+  .max(7, "Informe no máximo 7 deitadas")
   .default(0);
 
 const passwordSchema = z
@@ -61,11 +79,23 @@ export const createUserSchema = z
     password: passwordSchema,
     phone: optionalTextSchema,
     address: optionalTextSchema,
+    maritalStatus: optionalTextSchema,
+    hasAllergies: z.boolean().default(false),
+    allergies: optionalTextSchema,
+    usesContinuousMedication: z.boolean().default(false),
+    continuousMedication: optionalTextSchema,
+    umbandaStartDate: optionalDateSchema,
     active: z.boolean().default(true),
     headOrixa: headOrixaSchema,
+    adjuntoOrixa: headOrixaSchema,
+    frontEntity: optionalTextSchema,
+    baptismDate: optionalDateSchema,
+    coronationDate: optionalDateSchema,
     hasAmaci: z.boolean().default(false),
     amaciOrixas: amaciOrixasSchema,
     deitadaCount: deitadaCountSchema,
+    rightObligations: rightObligationsSchema,
+    leftObligations: leftObligationsSchema,
     monthlyFeeExempt: z.boolean().default(false),
     roleIds: relationIdsSchema,
     groupIds: relationIdsSchema,
@@ -81,11 +111,23 @@ export const updateUserSchema = z
     password: optionalPasswordSchema,
     phone: optionalTextSchema,
     address: optionalTextSchema,
+    maritalStatus: optionalTextSchema,
+    hasAllergies: z.boolean().default(false),
+    allergies: optionalTextSchema,
+    usesContinuousMedication: z.boolean().default(false),
+    continuousMedication: optionalTextSchema,
+    umbandaStartDate: optionalDateSchema,
     active: z.boolean().default(true),
     headOrixa: headOrixaSchema,
+    adjuntoOrixa: headOrixaSchema,
+    frontEntity: optionalTextSchema,
+    baptismDate: optionalDateSchema,
+    coronationDate: optionalDateSchema,
     hasAmaci: z.boolean().default(false),
     amaciOrixas: amaciOrixasSchema,
     deitadaCount: deitadaCountSchema,
+    rightObligations: rightObligationsSchema,
+    leftObligations: leftObligationsSchema,
     monthlyFeeExempt: z.boolean().default(false),
     roleIds: relationIdsSchema,
     groupIds: relationIdsSchema,

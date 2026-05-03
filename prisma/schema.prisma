@@ -38,30 +38,42 @@ enum NotificationType {
 }
 
 model User {
-  id                     String                  @id @default(cuid())
-  name                   String
-  email                  String                  @unique
-  password               String
-  phone                  String?
-  address                String?
-  active                 Boolean                 @default(true)
-  headOrixa              String?
-  hasAmaci               Boolean                 @default(false)
-  deitadaCount           Int                     @default(0)
-  monthlyFeeExempt       Boolean                 @default(false)
-  createdAt              DateTime                @default(now())
-  roles                  UserRole[]
-  permissions            UserPermission[]
-  groups                 UserGroup[]
-  studyMaterials         StudyMaterial[]         @relation("StudyMaterialCreatedBy")
-  points                 Point[]                 @relation("PointCreatedBy")
-  functions              HouseFunction[]         @relation("HouseFunctionCreatedBy")
-  amaciBaths             AmaciBath[]             @relation("AmaciBathUser")
-  amaciBathsMarked       AmaciBath[]             @relation("AmaciBathMarkedBy")
-  monthlyPayments        MonthlyPayment[]        @relation("MonthlyPaymentUser")
-  monthlyPaymentsMarked  MonthlyPayment[]        @relation("MonthlyPaymentMarkedBy")
-  notificationsCreated   Notification[]          @relation("NotificationCreatedBy")
-  notificationRecipients NotificationRecipient[]
+  id                       String                  @id @default(cuid())
+  name                     String
+  email                    String                  @unique
+  password                 String
+  phone                    String?
+  address                  String?
+  maritalStatus            String?
+  hasAllergies             Boolean                 @default(false)
+  allergies                String?
+  usesContinuousMedication Boolean                 @default(false)
+  continuousMedication     String?
+  umbandaStartDate         DateTime?
+  active                   Boolean                 @default(true)
+  headOrixa                String?
+  adjuntoOrixa             String?
+  frontEntity              String?
+  baptismDate              DateTime?
+  coronationDate           DateTime?
+  hasAmaci                 Boolean                 @default(false)
+  deitadaCount             Int                     @default(0)
+  rightObligations         String[]                @default([])
+  leftObligations          String[]                @default([])
+  monthlyFeeExempt         Boolean                 @default(false)
+  createdAt                DateTime                @default(now())
+  roles                    UserRole[]
+  permissions              UserPermission[]
+  groups                   UserGroup[]
+  studyMaterials           StudyMaterial[]         @relation("StudyMaterialCreatedBy")
+  points                   Point[]                 @relation("PointCreatedBy")
+  functions                HouseFunction[]         @relation("HouseFunctionCreatedBy")
+  amaciBaths               AmaciBath[]             @relation("AmaciBathUser")
+  amaciBathsMarked         AmaciBath[]             @relation("AmaciBathMarkedBy")
+  monthlyPayments          MonthlyPayment[]        @relation("MonthlyPaymentUser")
+  monthlyPaymentsMarked    MonthlyPayment[]        @relation("MonthlyPaymentMarkedBy")
+  notificationsCreated     Notification[]          @relation("NotificationCreatedBy")
+  notificationRecipients   NotificationRecipient[]
 
   @@map("users")
 }

@@ -53,8 +53,8 @@ export async function toggleAmaciBathAction(
     return { error: "Sem permissão" };
   }
 
-  if (!canManage && parsed.data.userId !== session.user.id) {
-    return { error: "Você só pode marcar seus próprios banhos" };
+  if (!canManage) {
+    return { error: "Somente o pai de santo pode alterar o amaci" };
   }
 
   const targetUser = await prisma.user.findFirst({
@@ -144,8 +144,8 @@ export async function updateDeitadaCountAction(
     return { error: "Sem permissão" };
   }
 
-  if (!canManage && parsed.data.userId !== session.user.id) {
-    return { error: "Você só pode atualizar suas próprias deitadas" };
+  if (!canManage) {
+    return { error: "Somente o pai de santo pode alterar o amaci" };
   }
 
   const targetUser = await prisma.user.findFirst({
