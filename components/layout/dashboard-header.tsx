@@ -21,19 +21,19 @@ export function DashboardHeader({
 }: DashboardHeaderProps) {
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur">
-      <div className="flex h-20 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-3">
+      <div className="flex h-20 items-center justify-between gap-3 px-4 sm:gap-4 sm:px-6 lg:px-8">
+        <div className="flex min-w-0 flex-1 items-center gap-3">
           <MobileSidebar items={navigationItems} />
-          <div>
+          <div className="min-w-0">
             <p className="text-sm font-medium text-muted-foreground">
               Sistema interno
             </p>
-            <h1 className="text-lg font-semibold tracking-tight">
+            <h1 className="truncate text-lg font-semibold tracking-tight">
               {userName ? `Olá, ${userName}` : "Dashboard"}
             </h1>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <ThemeToggle />
           <Link href="/dashboard/notificacoes">
             <Badge className="hidden gap-2 bg-card text-foreground transition hover:bg-muted sm:inline-flex">

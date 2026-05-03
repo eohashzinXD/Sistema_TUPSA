@@ -1,4 +1,4 @@
-// File: /home/eohashzin/Projetos/tupsa/app/(auth)/login/page.tsx
+// File: C:\Users\Administrator\Downloads\Projeto\Sistema_TUPSA\app\(auth)\login\page.tsx
 import * as entry from '../../../../../app/(auth)/login/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

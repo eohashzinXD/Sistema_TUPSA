@@ -1,7 +1,8 @@
 "use client";
 
-import { Menu } from "lucide-react";
-import { useState } from "react";
+import { Menu, X } from "lucide-react";
+import { useEffect, useId, useState } from "react";
+import { usePathname } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import type { NavigationItem } from "@/lib/navigation";
@@ -14,12 +15,42 @@ type MobileSidebarProps = {
 
 export function MobileSidebar({ items }: MobileSidebarProps) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const drawerId = useId();
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
 
   return (
     <>
       <Button
         aria-label="Abrir menu"
-        className="lg:hidden"
+        aria-controls={drawerId}
+        aria-expanded={open}
+        className="shrink-0 lg:hidden"
         onClick={() => setOpen(true)}
         size="sm"
         type="button"
@@ -35,20 +66,25 @@ export function MobileSidebar({ items }: MobileSidebarProps) {
         onClick={() => setOpen(false)}
       />
       <aside
+        aria-hidden={!open}
+        aria-modal={open}
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-80 max-w-[86vw] flex-col border-r border-border bg-card p-5 shadow-xl transition-transform lg:hidden",
-          open ? "translate-x-0" : "-translate-x-full"
+          "fixed inset-y-0 left-0 z-50 flex h-dvh w-80 max-w-[86vw] flex-col border-r border-border bg-card p-5 shadow-xl transition-transform duration-200 ease-out lg:hidden",
+          open ? "translate-x-0" : "pointer-events-none -translate-x-full"
         )}
+        id={drawerId}
+        role="dialog"
       >
         <div className="mb-6 flex shrink-0 items-center justify-between">
           <BrandBlock compact />
           <Button
+            aria-label="Fechar menu"
             onClick={() => setOpen(false)}
             size="sm"
             type="button"
             variant="ghost"
           >
-            Fechar
+            <X className="size-4" aria-hidden="true" />
           </Button>
         </div>
         <div className="-mx-2 min-h-0 flex-1 overflow-y-auto px-2 pb-6">

@@ -1,4 +1,4 @@
-// File: /home/eohashzin/Projetos/tupsa/app/dashboard/amaci/page.tsx
+// File: C:\Users\Administrator\Downloads\Projeto\Sistema_TUPSA\app\dashboard\amaci\page.tsx
 import * as entry from '../../../../../app/dashboard/amaci/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
