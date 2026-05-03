@@ -1,0 +1,285 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CategoryType {
+  STUDY
+  POINT
+}
+
+enum StudyMaterialType {
+  TEXT
+  LINK
+  FILE
+}
+
+enum ContentType {
+  STUDY_MATERIAL
+  POINT
+}
+
+enum ContentTargetType {
+  ALL
+  ROLE
+  GROUP
+  USER
+}
+
+enum NotificationType {
+  INFO
+  STUDY
+  POINT
+  SYSTEM
+}
+
+model User {
+  id                     String                  @id @default(cuid())
+  name                   String
+  email                  String                  @unique
+  password               String
+  phone                  String?
+  address                String?
+  active                 Boolean                 @default(true)
+  headOrixa              String?
+  hasAmaci               Boolean                 @default(false)
+  deitadaCount           Int                     @default(0)
+  monthlyFeeExempt       Boolean                 @default(false)
+  createdAt              DateTime                @default(now())
+  roles                  UserRole[]
+  permissions            UserPermission[]
+  groups                 UserGroup[]
+  studyMaterials         StudyMaterial[]         @relation("StudyMaterialCreatedBy")
+  points                 Point[]                 @relation("PointCreatedBy")
+  functions              HouseFunction[]         @relation("HouseFunctionCreatedBy")
+  amaciBaths             AmaciBath[]             @relation("AmaciBathUser")
+  amaciBathsMarked       AmaciBath[]             @relation("AmaciBathMarkedBy")
+  monthlyPayments        MonthlyPayment[]        @relation("MonthlyPaymentUser")
+  monthlyPaymentsMarked  MonthlyPayment[]        @relation("MonthlyPaymentMarkedBy")
+  notificationsCreated   Notification[]          @relation("NotificationCreatedBy")
+  notificationRecipients NotificationRecipient[]
+
+  @@map("users")
+}
+
+model Role {
+  id          String           @id @default(cuid())
+  name        String           @unique
+  description String?
+  users       UserRole[]
+  permissions RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String           @id @default(cuid())
+  key         String           @unique
+  description String?
+  roles       RolePermission[]
+  users       UserPermission[]
+
+  @@map("permissions")
+}
+
+model UserRole {
+  userId String
+  roleId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model UserPermission {
+  userId       String
+  permissionId String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([userId, permissionId])
+  @@map("user_permissions")
+}
+
+model Group {
+  id          String      @id @default(cuid())
+  name        String      @unique
+  description String?
+  users       UserGroup[]
+
+  @@map("groups")
+}
+
+model UserGroup {
+  userId  String
+  groupId String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@id([userId, groupId])
+  @@map("user_groups")
+}
+
+model Category {
+  id             String          @id @default(cuid())
+  name           String
+  type           CategoryType
+  parentId       String?
+  parent         Category?       @relation("CategoryChildren", fields: [parentId], references: [id], onDelete: Restrict)
+  children       Category[]      @relation("CategoryChildren")
+  studyMaterials StudyMaterial[]
+  points         Point[]
+
+  @@unique([name, type, parentId])
+  @@index([type])
+  @@index([parentId])
+  @@map("categories")
+}
+
+model StudyMaterial {
+  id          String            @id @default(cuid())
+  title       String
+  type        StudyMaterialType
+  content     String?
+  url         String?
+  visibility  ContentTargetType @default(ALL)
+  categoryId  String
+  createdById String
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  category    Category          @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  createdBy   User              @relation("StudyMaterialCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@index([categoryId])
+  @@index([createdById])
+  @@index([visibility])
+  @@map("study_materials")
+}
+
+model Point {
+  id          String            @id @default(cuid())
+  title       String
+  lyrics      String
+  categoryId  String
+  entity      String?
+  audioUrl    String?
+  visibility  ContentTargetType @default(ALL)
+  createdById String
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  category    Category          @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  createdBy   User              @relation("PointCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@index([categoryId])
+  @@index([createdById])
+  @@index([visibility])
+  @@map("points")
+}
+
+model HouseFunction {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  startsAt    DateTime
+  endsAt      DateTime
+  mandatory   Boolean  @default(true)
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   User     @relation("HouseFunctionCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@index([startsAt])
+  @@index([createdById])
+  @@map("house_functions")
+}
+
+model AmaciBath {
+  id         String   @id @default(cuid())
+  userId     String
+  orixa      String
+  takenAt    DateTime @default(now())
+  markedById String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation("AmaciBathUser", fields: [userId], references: [id], onDelete: Cascade)
+  markedBy   User     @relation("AmaciBathMarkedBy", fields: [markedById], references: [id], onDelete: Restrict)
+
+  @@unique([userId, orixa])
+  @@index([userId])
+  @@index([markedById])
+  @@map("amaci_baths")
+}
+
+model MonthlyPayment {
+  id         String   @id @default(cuid())
+  userId     String
+  year       Int
+  month      Int
+  paidAt     DateTime @default(now())
+  markedById String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation("MonthlyPaymentUser", fields: [userId], references: [id], onDelete: Cascade)
+  markedBy   User     @relation("MonthlyPaymentMarkedBy", fields: [markedById], references: [id], onDelete: Restrict)
+
+  @@unique([userId, year, month])
+  @@index([year, month])
+  @@index([markedById])
+  @@map("monthly_payments")
+}
+
+model ContentVisibility {
+  id          String            @id @default(cuid())
+  contentId   String
+  contentType ContentType
+  targetType  ContentTargetType
+  targetId    String?
+
+  @@unique([contentType, contentId, targetType, targetId])
+  @@index([contentType, contentId])
+  @@index([targetType, targetId])
+  @@map("content_visibilities")
+}
+
+model Notification {
+  id          String                  @id @default(cuid())
+  title       String
+  message     String
+  type        NotificationType        @default(INFO)
+  link        String?
+  createdAt   DateTime                @default(now())
+  createdById String
+  createdBy   User                    @relation("NotificationCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  recipients  NotificationRecipient[]
+
+  @@index([createdById])
+  @@map("notifications")
+}
+
+model NotificationRecipient {
+  id             String       @id @default(cuid())
+  notificationId String
+  userId         String
+  readAt         DateTime?
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([notificationId, userId])
+  @@index([userId, readAt])
+  @@map("notification_recipients")
+}
