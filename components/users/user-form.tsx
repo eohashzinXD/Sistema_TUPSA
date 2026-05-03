@@ -267,7 +267,7 @@ export function UserForm({
         </CardDescription>
         <div className="mt-6 grid gap-5 md:grid-cols-2">
           <Field
-            label="Orixá de cabeça"
+            label="Orixá de Frente"
             error={form.formState.errors.headOrixa?.message}
           >
             <select

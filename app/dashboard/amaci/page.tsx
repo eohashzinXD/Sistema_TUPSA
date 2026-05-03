@@ -146,7 +146,7 @@ function AmaciUserCard({
           <p className="mt-1 text-sm text-muted-foreground">{user.email}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             <Badge className="bg-card">
-              Orixá de cabeça:{" "}
+              Orixá de Frente:{" "}
               {user.headOrixa && user.headOrixa in orixaLabels
                 ? orixaLabels[user.headOrixa as OrixaCode]
                 : "não informado"}
