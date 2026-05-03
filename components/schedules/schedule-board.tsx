@@ -94,7 +94,7 @@ export function ScheduleBoard({
       const uploadResult = await uploadScheduleImage(selectedFile);
       if (uploadResult.error || !uploadResult.url) {
         setResult({
-          error: uploadResult.error ?? "NÃ£o foi possÃ­vel enviar a imagem"
+          error: uploadResult.error ?? "Não foi possível enviar a imagem"
         });
         return;
       }
