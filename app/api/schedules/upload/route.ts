@@ -1,24 +1,20 @@
-import { randomUUID } from "crypto";
-import { mkdir, writeFile } from "fs/promises";
 import { NextResponse } from "next/server";
 import path from "path";
 
 import { auth } from "@/auth";
 import { isPaiDeSanto } from "@/actions/schedules";
 
-const MAX_SCHEDULE_IMAGE_SIZE = 8 * 1024 * 1024;
-const SCHEDULE_UPLOAD_DIR = path.join(
-  process.cwd(),
-  "public",
-  "uploads",
-  "schedules"
-);
-const SCHEDULE_UPLOAD_PUBLIC_PATH = "/uploads/schedules";
+const MAX_SCHEDULE_IMAGE_SIZE = 4 * 1024 * 1024;
 const allowedScheduleImageExtensions = new Set([
   ".jpeg",
   ".jpg",
   ".png",
   ".webp"
+]);
+const allowedScheduleImageMimeTypes = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp"
 ]);
 
 function getSafeScheduleImageExtension(fileName: string) {
@@ -54,29 +50,24 @@ export async function POST(request: Request) {
 
   if (file.size > MAX_SCHEDULE_IMAGE_SIZE) {
     return NextResponse.json(
-      { error: "A imagem deve ter no mÃ¡ximo 8 MB" },
+      { error: "A imagem deve ter no mÃ¡ximo 4 MB" },
       { status: 400 }
     );
   }
 
   const extension = getSafeScheduleImageExtension(file.name);
-  if (!extension) {
+  if (!extension || !allowedScheduleImageMimeTypes.has(file.type)) {
     return NextResponse.json(
       { error: "Use uma imagem JPG, PNG ou WEBP" },
       { status: 400 }
     );
   }
 
-  await mkdir(SCHEDULE_UPLOAD_DIR, { recursive: true });
-
-  const fileName = `${Date.now()}-${randomUUID()}${extension}`;
-  const filePath = path.join(SCHEDULE_UPLOAD_DIR, fileName);
   const bytes = Buffer.from(await file.arrayBuffer());
-
-  await writeFile(filePath, bytes);
+  const dataUrl = `data:${file.type};base64,${bytes.toString("base64")}`;
 
   return NextResponse.json({
     success: "Imagem enviada",
-    url: `${SCHEDULE_UPLOAD_PUBLIC_PATH}/${fileName}`
+    url: dataUrl
   });
 }

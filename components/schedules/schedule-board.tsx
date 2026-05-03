@@ -48,7 +48,7 @@ async function uploadScheduleImage(file: File) {
 
   if (!response.ok || body.error || !body.url) {
     return {
-      error: body.error ?? "NÃ£o foi possÃ­vel enviar a imagem"
+      error: body.error ?? "Não foi possível enviar a imagem"
     };
   }
 
@@ -249,6 +249,7 @@ export function ScheduleBoard({
                 className="h-auto w-full object-contain"
                 height={1600}
                 src={selectedSchedule.imageUrl}
+                unoptimized
                 width={1200}
               />
             </a>
