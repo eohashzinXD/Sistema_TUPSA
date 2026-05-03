@@ -9,32 +9,25 @@ import { prisma } from "@/lib/prisma";
 
 type SchedulesPageProps = {
   searchParams?: {
-    month?: string;
+    year?: string;
   };
 };
 
-function getSelectedMonth(value?: string) {
+function getSelectedYear(value?: string) {
   const now = new Date();
-  const fallback = {
-    year: now.getFullYear(),
-    month: now.getMonth() + 1
-  };
+  const fallback = now.getFullYear();
 
-  if (!value || !/^\d{4}-\d{2}$/.test(value)) {
+  if (!value || !/^\d{4}$/.test(value)) {
     return fallback;
   }
 
-  const [year, month] = value.split("-").map(Number);
+  const year = Number(value);
 
-  if (year < 2020 || year > 2100 || month < 1 || month > 12) {
+  if (year < 2020 || year > 2100) {
     return fallback;
   }
 
-  return { year, month };
-}
-
-function toMonthValue(year: number, month: number) {
-  return `${year}-${String(month).padStart(2, "0")}`;
+  return year;
 }
 
 export default async function SchedulesPage({
@@ -52,11 +45,10 @@ export default async function SchedulesPage({
     return <AccessDenied />;
   }
 
-  const selectedMonth = getSelectedMonth(searchParams?.month);
+  const selectedYear = getSelectedYear(searchParams?.year);
   const schedules = await prisma.schedule.findMany({
     where: {
-      year: selectedMonth.year,
-      month: selectedMonth.month
+      year: selectedYear
     },
     orderBy: {
       type: "asc"
@@ -85,20 +77,18 @@ export default async function SchedulesPage({
           Cronogramas
         </p>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-          Festas, amacis e giras do mês
+          Festas, amacis e giras do ano
         </h1>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          Filtre por mês e abra o cronograma pelo tipo. Apenas o pai de santo
+          Filtre por ano e abra o cronograma pelo tipo. Apenas o pai de santo
           pode substituir as imagens publicadas.
         </p>
       </section>
 
       <ScheduleBoard
         canManage={canManage}
-        month={selectedMonth.month}
-        monthValue={toMonthValue(selectedMonth.year, selectedMonth.month)}
         schedules={scheduleItems}
-        year={selectedMonth.year}
+        year={selectedYear}
       />
     </div>
   );

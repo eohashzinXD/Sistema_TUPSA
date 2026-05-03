@@ -266,15 +266,14 @@ model Schedule {
   id          String       @id @default(cuid())
   type        ScheduleType
   year        Int
-  month       Int
   imageUrl    String
   createdById String
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   createdBy   User         @relation("ScheduleCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
 
-  @@unique([type, year, month])
-  @@index([year, month])
+  @@unique([type, year])
+  @@index([year])
   @@index([createdById])
   @@map("schedules")
 }

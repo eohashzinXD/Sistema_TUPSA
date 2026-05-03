@@ -30,10 +30,8 @@ type ScheduleItem = {
 
 type ScheduleBoardProps = {
   canManage: boolean;
-  monthValue: string;
   schedules: ScheduleItem[];
   year: number;
-  month: number;
 };
 
 async function uploadScheduleImage(file: File) {
@@ -64,10 +62,8 @@ function formatDate(date: string) {
 
 export function ScheduleBoard({
   canManage,
-  monthValue,
   schedules,
-  year,
-  month
+  year
 }: ScheduleBoardProps) {
   const router = useRouter();
   const [selectedType, setSelectedType] = useState<ScheduleType>(
@@ -82,10 +78,10 @@ export function ScheduleBoard({
   );
   const selectedSchedule = schedulesByType.get(selectedType);
 
-  function onMonthChange(value: string) {
+  function onYearChange(value: string) {
     if (!value) return;
 
-    router.push(`/dashboard/cronogramas?month=${value}`);
+    router.push(`/dashboard/cronogramas?year=${value}`);
   }
 
   function onSubmit() {
@@ -106,7 +102,6 @@ export function ScheduleBoard({
       const actionResult = await upsertScheduleAction({
         type: selectedType,
         year,
-        month,
         imageUrl: uploadResult.url
       });
 
@@ -123,14 +118,14 @@ export function ScheduleBoard({
     <div className="grid gap-5 lg:grid-cols-[280px_1fr]">
       <Card className="space-y-5 p-5">
         <label className="block space-y-2">
-          <span className="text-sm font-medium">Mês</span>
+          <span className="text-sm font-medium">Ano</span>
           <input
             className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-primary"
-            defaultValue={monthValue}
-            max="2100-12"
-            min="2020-01"
-            onChange={(event) => onMonthChange(event.target.value)}
-            type="month"
+            defaultValue={String(year)}
+            max={2100}
+            min={2020}
+            onChange={(event) => onYearChange(event.target.value)}
+            type="number"
           />
         </label>
 
@@ -223,10 +218,7 @@ export function ScheduleBoard({
             {scheduleTypeLabels[selectedType]}
           </p>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight">
-            {new Intl.DateTimeFormat("pt-BR", {
-              month: "long",
-              year: "numeric"
-            }).format(new Date(year, month - 1, 1))}
+            Cronograma anual de {year}
           </h2>
           {selectedSchedule ? (
             <p className="mt-2 text-sm text-muted-foreground">
@@ -264,7 +256,7 @@ export function ScheduleBoard({
                   Nenhum cronograma publicado
                 </p>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  Selecione outro Mês ou aguarde o pai de santo enviar a imagem.
+                  Selecione outro ano ou aguarde o pai de santo enviar a imagem.
                 </p>
               </div>
             </div>

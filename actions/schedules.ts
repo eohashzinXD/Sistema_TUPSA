@@ -63,10 +63,9 @@ export async function upsertScheduleAction(
 
   await prisma.schedule.upsert({
     where: {
-      type_year_month: {
+      type_year: {
         type: parsed.data.type,
-        year: parsed.data.year,
-        month: parsed.data.month
+        year: parsed.data.year
       }
     },
     update: {
@@ -76,7 +75,6 @@ export async function upsertScheduleAction(
     create: {
       type: parsed.data.type,
       year: parsed.data.year,
-      month: parsed.data.month,
       imageUrl: parsed.data.imageUrl,
       createdById: permission.userId
     }
