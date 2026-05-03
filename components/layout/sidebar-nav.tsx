@@ -3,6 +3,7 @@
 import {
   Bell,
   BookOpenText,
+  CalendarDays,
   CalendarClock,
   Droplets,
   FolderTree,
@@ -27,6 +28,7 @@ const navigationIcons: Record<NavigationIcon, typeof Home> = {
   bell: Bell,
   book: BookOpenText,
   calendar: CalendarClock,
+  "calendar-days": CalendarDays,
   droplets: Droplets,
   folder: FolderTree,
   home: Home,

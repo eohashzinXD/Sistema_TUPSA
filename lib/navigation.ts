@@ -2,6 +2,7 @@ export type NavigationIcon =
   | "bell"
   | "book"
   | "calendar"
+  | "calendar-days"
   | "droplets"
   | "folder"
   | "home"
@@ -46,6 +47,13 @@ export const dashboardNavigation: NavigationItem[] = [
     description: "Agenda obrigatória da casa",
     icon: "calendar",
     permissions: ["functions:read"]
+  },
+  {
+    title: "Cronogramas",
+    href: "/dashboard/cronogramas",
+    description: "Festas, amacis e giras do mÃªs",
+    icon: "calendar-days",
+    permissions: ["schedules:read"]
   },
   {
     title: "Amaci",

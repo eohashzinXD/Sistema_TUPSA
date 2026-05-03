@@ -19,6 +19,8 @@ const permissions = [
   ["amaci:manage", "Gerenciar amaci dos filhos"],
   ["monthly-fees:read", "Visualizar mensalidades"],
   ["monthly-fees:manage", "Gerenciar mensalidades dos filhos"],
+  ["schedules:read", "Visualizar cronogramas mensais"],
+  ["schedules:manage", "Gerenciar cronogramas mensais"],
   ["categories:manage", "Gerenciar categorias e subcategorias"],
   ["notifications:read", "Visualizar comunicados"],
   ["notifications:create", "Enviar comunicados internos"],
@@ -40,6 +42,7 @@ const roleDefinitions = [
       "points:read",
       "functions:read",
       "amaci:read",
+      "schedules:read",
       "monthly-fees:read",
       "notifications:read"
     ]
@@ -55,6 +58,7 @@ const roleDefinitions = [
       "points:delete",
       "functions:read",
       "amaci:read",
+      "schedules:read",
       "monthly-fees:read",
       "notifications:read"
     ]

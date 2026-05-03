@@ -1,0 +1,44 @@
+
+> tupsa@0.1.0 dev
+> next dev -p 3001
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3001
+  - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 16s
+ ○ Compiling /login ...
+ ✓ Compiled / in 32.7s (921 modules)
+ GET /login 307 in 14803ms
+ GET / 200 in 29641ms
+ ○ Compiling /middleware ...
+ ✓ Compiled /middleware in 3.2s (245 modules)
+ GET /login?callbackUrl=%2Fdashboard 307 in 122ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 151ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 113ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 89ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 85ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 183ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 84ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 118ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 58ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 60ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 95ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 56ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 56ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 62ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 81ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 74ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 56ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 69ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 53ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 56ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 57ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 80ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 72ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 80ms
+ GET /login?callbackUrl=%2Fdashboard 307 in 184ms
+ GET /login 307 in 94ms
+ GET /login?_rsc=1pqi3 200 in 30ms
+ GET /login?callbackUrl=%2Fdashboard&_rsc=1k4a9 200 in 27ms

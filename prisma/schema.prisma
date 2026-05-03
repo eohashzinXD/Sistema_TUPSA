@@ -37,6 +37,12 @@ enum NotificationType {
   SYSTEM
 }
 
+enum ScheduleType {
+  FESTAS
+  AMACIS
+  GIRAS
+}
+
 model User {
   id                       String                  @id @default(cuid())
   name                     String
@@ -72,6 +78,7 @@ model User {
   amaciBathsMarked         AmaciBath[]             @relation("AmaciBathMarkedBy")
   monthlyPayments          MonthlyPayment[]        @relation("MonthlyPaymentUser")
   monthlyPaymentsMarked    MonthlyPayment[]        @relation("MonthlyPaymentMarkedBy")
+  schedulesCreated         Schedule[]              @relation("ScheduleCreatedBy")
   notificationsCreated     Notification[]          @relation("NotificationCreatedBy")
   notificationRecipients   NotificationRecipient[]
 
@@ -253,6 +260,23 @@ model MonthlyPayment {
   @@index([year, month])
   @@index([markedById])
   @@map("monthly_payments")
+}
+
+model Schedule {
+  id          String       @id @default(cuid())
+  type        ScheduleType
+  year        Int
+  month       Int
+  imageUrl    String
+  createdById String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  createdBy   User         @relation("ScheduleCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@unique([type, year, month])
+  @@index([year, month])
+  @@index([createdById])
+  @@map("schedules")
 }
 
 model ContentVisibility {
