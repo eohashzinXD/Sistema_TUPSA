@@ -15,12 +15,13 @@ const permissions = [
   ["points:delete", "Remover pontos cantados"],
   ["functions:read", "Visualizar funções da casa"],
   ["functions:create", "Criar funções da casa"],
+  ["functions:manage", "Gerenciar funções da casa"],
   ["amaci:read", "Visualizar controle de amaci"],
   ["amaci:manage", "Gerenciar amaci dos filhos"],
   ["monthly-fees:read", "Visualizar mensalidades"],
   ["monthly-fees:manage", "Gerenciar mensalidades dos filhos"],
-  ["schedules:read", "Visualizar cronogramas mensais"],
-  ["schedules:manage", "Gerenciar cronogramas mensais"],
+  ["cronogramas:read", "Visualizar cronogramas"],
+  ["cronogramas:manage", "Gerenciar cronogramas"],
   ["settings:manage", "Gerenciar configuracoes do terreiro"],
   ["categories:manage", "Gerenciar categorias e subcategorias"],
   ["notifications:read", "Visualizar comunicados"],
@@ -43,7 +44,7 @@ const roleDefinitions = [
       "points:read",
       "functions:read",
       "amaci:read",
-      "schedules:read",
+      "cronogramas:read",
       "monthly-fees:read",
       "notifications:read"
     ]
@@ -59,7 +60,7 @@ const roleDefinitions = [
       "points:delete",
       "functions:read",
       "amaci:read",
-      "schedules:read",
+      "cronogramas:read",
       "monthly-fees:read",
       "notifications:read"
     ]

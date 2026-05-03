@@ -3,10 +3,14 @@
 import { revalidatePath } from "next/cache";
 
 import { auth } from "@/auth";
+import { hasPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import {
   createFunctionSchema,
-  type CreateFunctionInput
+  type CreateFunctionInput,
+  functionIdSchema,
+  updateFunctionSchema,
+  type UpdateFunctionInput
 } from "@/lib/validations/functions";
 
 export type FunctionActionResult = {
@@ -24,21 +28,8 @@ async function ensurePaiDeSanto(): Promise<
   const session = await auth();
   if (!session) return { error: "Não autenticado" };
 
-  const userRole = await prisma.userRole.findFirst({
-    where: {
-      userId: session.user.id,
-      role: {
-        name: "pai-de-santo"
-      }
-    },
-    select: {
-      userId: true
-    }
-  });
-
-  if (!userRole) {
-    return { error: "Somente o pai de santo pode criar funções" };
-  }
+  const allowed = await hasPermission(session.user.id, "functions:manage");
+  if (!allowed) return { error: "Sem permissão" };
 
   return {
     allowed: true,
@@ -72,4 +63,57 @@ export async function createFunctionAction(
   revalidatePath("/dashboard");
 
   return { success: "Função criada" };
+}
+
+export async function updateFunctionAction(
+  input: UpdateFunctionInput
+): Promise<FunctionActionResult> {
+  const permission = await ensurePaiDeSanto();
+  if (!("allowed" in permission)) return permission;
+
+  const parsed = updateFunctionSchema.safeParse(input);
+  if (!parsed.success) {
+    return { error: "Dados inválidos" };
+  }
+
+  await prisma.houseFunction.update({
+    where: {
+      id: parsed.data.id
+    },
+    data: {
+      title: parsed.data.title,
+      description: parsed.data.description,
+      startsAt: parsed.data.startsAt,
+      endsAt: parsed.data.endsAt,
+      mandatory: true
+    }
+  });
+
+  revalidatePath("/dashboard/funcoes");
+  revalidatePath("/dashboard");
+
+  return { success: "Função atualizada" };
+}
+
+export async function deleteFunctionAction(input: {
+  id: string;
+}): Promise<FunctionActionResult> {
+  const permission = await ensurePaiDeSanto();
+  if (!("allowed" in permission)) return permission;
+
+  const parsed = functionIdSchema.safeParse(input);
+  if (!parsed.success) {
+    return { error: "Dados inválidos" };
+  }
+
+  await prisma.houseFunction.delete({
+    where: {
+      id: parsed.data.id
+    }
+  });
+
+  revalidatePath("/dashboard/funcoes");
+  revalidatePath("/dashboard");
+
+  return { success: "Função excluída" };
 }

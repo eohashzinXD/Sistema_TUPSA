@@ -1,13 +1,12 @@
 import { redirect } from "next/navigation";
 
-import { isPaiDeSanto } from "@/actions/schedules";
 import { auth } from "@/auth";
-import { ScheduleBoard } from "@/components/schedules/schedule-board";
+import { CronogramasBoard } from "@/components/cronogramas/cronogramas-board";
 import { Card } from "@/components/ui/card";
 import { hasPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 
-type SchedulesPageProps = {
+type CronogramasPageProps = {
   searchParams?: {
     year?: string;
   };
@@ -30,15 +29,15 @@ function getSelectedYear(value?: string) {
   return year;
 }
 
-export default async function SchedulesPage({
+export default async function CronogramasPage({
   searchParams
-}: SchedulesPageProps) {
+}: CronogramasPageProps) {
   const session = await auth();
   if (!session) redirect("/login");
 
   const [canRead, canManage] = await Promise.all([
-    hasPermission(session.user.id, "schedules:read"),
-    isPaiDeSanto(session.user.id)
+    hasPermission(session.user.id, "cronogramas:read"),
+    hasPermission(session.user.id, "cronogramas:manage")
   ]);
 
   if (!canRead) {
@@ -46,7 +45,7 @@ export default async function SchedulesPage({
   }
 
   const selectedYear = getSelectedYear(searchParams?.year);
-  const schedules = await prisma.schedule.findMany({
+  const cronogramas = await prisma.schedule.findMany({
     where: {
       year: selectedYear
     },
@@ -65,9 +64,9 @@ export default async function SchedulesPage({
       }
     }
   });
-  const scheduleItems = schedules.map((schedule) => ({
-    ...schedule,
-    updatedAt: schedule.updatedAt.toISOString()
+  const cronogramaItems = cronogramas.map((cronograma) => ({
+    ...cronograma,
+    updatedAt: cronograma.updatedAt.toISOString()
   }));
 
   return (
@@ -85,9 +84,9 @@ export default async function SchedulesPage({
         </p>
       </section>
 
-      <ScheduleBoard
+      <CronogramasBoard
         canManage={canManage}
-        schedules={scheduleItems}
+        cronogramas={cronogramaItems}
         year={selectedYear}
       />
     </div>
@@ -97,9 +96,9 @@ export default async function SchedulesPage({
 function AccessDenied() {
   return (
     <Card>
-      <h1 className="text-xl font-semibold">Sem permissÃ£o</h1>
+      <h1 className="text-xl font-semibold">Sem permissão</h1>
       <p className="mt-2 text-sm text-muted-foreground">
-        VocÃª nÃ£o tem acesso a esta Ã¡rea.
+        Você não tem acesso a esta área.
       </p>
     </Card>
   );

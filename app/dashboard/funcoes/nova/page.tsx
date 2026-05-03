@@ -3,29 +3,13 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { FunctionForm } from "@/components/functions/function-form";
 import { Card } from "@/components/ui/card";
-import { prisma } from "@/lib/prisma";
-
-async function isPaiDeSanto(userId: string) {
-  const role = await prisma.userRole.findFirst({
-    where: {
-      userId,
-      role: {
-        name: "pai-de-santo"
-      }
-    },
-    select: {
-      userId: true
-    }
-  });
-
-  return Boolean(role);
-}
+import { hasPermission } from "@/lib/permissions";
 
 export default async function NewFunctionPage() {
   const session = await auth();
   if (!session) redirect("/login");
 
-  const allowed = await isPaiDeSanto(session.user.id);
+  const allowed = await hasPermission(session.user.id, "functions:manage");
   if (!allowed) {
     return <AccessDenied />;
   }

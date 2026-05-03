@@ -2,43 +2,20 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/auth";
-import { Badge } from "@/components/ui/badge";
+import { FunctionsBoard } from "@/components/functions/functions-board";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { hasPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 
-function formatDateTime(date: Date) {
-  return new Intl.DateTimeFormat("pt-BR", {
-    dateStyle: "short",
-    timeStyle: "short"
-  }).format(date);
-}
-
-async function isPaiDeSanto(userId: string) {
-  const role = await prisma.userRole.findFirst({
-    where: {
-      userId,
-      role: {
-        name: "pai-de-santo"
-      }
-    },
-    select: {
-      userId: true
-    }
-  });
-
-  return Boolean(role);
-}
-
 export default async function FunctionsPage() {
   const session = await auth();
   if (!session) redirect("/login");
 
-  const [canRead, canCreate, functions] = await Promise.all([
+  const [canRead, canManage, functions] = await Promise.all([
     hasPermission(session.user.id, "functions:read"),
-    isPaiDeSanto(session.user.id),
+    hasPermission(session.user.id, "functions:manage"),
     prisma.houseFunction.findMany({
       orderBy: { startsAt: "asc" },
       select: {
@@ -61,6 +38,16 @@ export default async function FunctionsPage() {
     return <AccessDenied />;
   }
 
+  const functionItems = functions.map((item) => ({
+    id: item.id,
+    title: item.title,
+    description: item.description,
+    startsAt: item.startsAt.toISOString(),
+    endsAt: item.endsAt.toISOString(),
+    mandatory: item.mandatory,
+    createdByName: item.createdBy.name
+  }));
+
   return (
     <div className="space-y-6">
       <section className="flex flex-col gap-4 rounded-3xl border border-border bg-card p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between">
@@ -75,7 +62,7 @@ export default async function FunctionsPage() {
             Funções obrigatórias com data e horário de início e finalização.
           </p>
         </div>
-        {canCreate ? (
+        {canManage ? (
           <Link
             className={cn(buttonVariants(), "shrink-0")}
             href="/dashboard/funcoes/nova"
@@ -85,41 +72,7 @@ export default async function FunctionsPage() {
         ) : null}
       </section>
 
-      <div className="grid gap-4">
-        {functions.map((item) => (
-          <Card className="p-5" key={item.id}>
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-              <div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-lg font-semibold tracking-tight">
-                    {item.title}
-                  </h2>
-                  {item.mandatory ? <Badge>Obrigatória</Badge> : null}
-                </div>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  {formatDateTime(item.startsAt)} até {formatDateTime(item.endsAt)}
-                </p>
-                {item.description ? (
-                  <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
-                    {item.description}
-                  </p>
-                ) : null}
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Criada por {item.createdBy.name}
-              </p>
-            </div>
-          </Card>
-        ))}
-        {functions.length === 0 ? (
-          <Card>
-            <h2 className="text-lg font-semibold">Nenhuma função cadastrada</h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Ainda não há funções obrigatórias registradas.
-            </p>
-          </Card>
-        ) : null}
-      </div>
+      <FunctionsBoard canManage={canManage} functions={functionItems} />
     </div>
   );
 }

@@ -7,18 +7,22 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 
 import {
-  upsertScheduleAction,
-  type ScheduleActionResult
-} from "@/actions/schedules";
+  deleteCronogramaAction,
+  upsertCronogramaAction,
+  type CronogramaActionResult
+} from "@/actions/cronogramas";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
-  scheduleTypeLabels,
-  scheduleTypes
-} from "@/lib/validations/schedules";
+  cronogramaPeriodicityLabels,
+  cronogramaTypeLabels,
+  cronogramaTypes
+} from "@/lib/validations/cronogramas";
 import { cn } from "@/lib/utils";
 
-type ScheduleItem = {
+type CronogramaItem = {
   id: string;
   type: ScheduleType;
   imageUrl: string;
@@ -28,21 +32,21 @@ type ScheduleItem = {
   };
 };
 
-type ScheduleBoardProps = {
+type CronogramasBoardProps = {
   canManage: boolean;
-  schedules: ScheduleItem[];
+  cronogramas: CronogramaItem[];
   year: number;
 };
 
-async function uploadScheduleImage(file: File) {
+async function uploadCronogramaImage(file: File) {
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await fetch("/api/schedules/upload", {
+  const response = await fetch("/api/cronogramas/upload", {
     method: "POST",
     body: formData
   });
-  const body = (await response.json()) as ScheduleActionResult;
+  const body = (await response.json()) as CronogramaActionResult;
 
   if (!response.ok || body.error || !body.url) {
     return {
@@ -60,23 +64,29 @@ function formatDate(date: string) {
   }).format(new Date(date));
 }
 
-export function ScheduleBoard({
+export function CronogramasBoard({
   canManage,
-  schedules,
+  cronogramas,
   year
-}: ScheduleBoardProps) {
+}: CronogramasBoardProps) {
   const router = useRouter();
   const [selectedType, setSelectedType] = useState<ScheduleType>(
     ScheduleType.FESTAS
   );
+  const [items, setItems] = useState(cronogramas);
+  const [editingType, setEditingType] = useState<ScheduleType | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [result, setResult] = useState<ScheduleActionResult>({});
+  const [deleting, setDeleting] = useState<CronogramaItem | null>(null);
+  const [result, setResult] = useState<CronogramaActionResult>({});
   const [isPending, startTransition] = useTransition();
-  const schedulesByType = useMemo(
-    () => new Map(schedules.map((schedule) => [schedule.type, schedule])),
-    [schedules]
+  const cronogramasByType = useMemo(
+    () =>
+      new Map(items.map((cronograma) => [cronograma.type, cronograma])),
+    [items]
   );
-  const selectedSchedule = schedulesByType.get(selectedType);
+  const selectedCronograma = cronogramasByType.get(selectedType);
+  const showUploadForm =
+    canManage && (!selectedCronograma || editingType === selectedType);
 
   function onYearChange(value: string) {
     if (!value) return;
@@ -91,7 +101,7 @@ export function ScheduleBoard({
     }
 
     startTransition(async () => {
-      const uploadResult = await uploadScheduleImage(selectedFile);
+      const uploadResult = await uploadCronogramaImage(selectedFile);
       if (uploadResult.error || !uploadResult.url) {
         setResult({
           error: uploadResult.error ?? "Não foi possível enviar a imagem"
@@ -99,7 +109,7 @@ export function ScheduleBoard({
         return;
       }
 
-      const actionResult = await upsertScheduleAction({
+      const actionResult = await upsertCronogramaAction({
         type: selectedType,
         year,
         imageUrl: uploadResult.url
@@ -109,8 +119,29 @@ export function ScheduleBoard({
 
       if (actionResult.success) {
         setSelectedFile(null);
+        setEditingType(null);
         router.refresh();
       }
+    });
+  }
+
+  function confirmDelete() {
+    if (!deleting) return;
+
+    const target = deleting;
+    startTransition(async () => {
+      const actionResult = await deleteCronogramaAction({ id: target.id });
+
+      setResult(actionResult);
+      if (actionResult.error) return;
+
+      setDeleting(null);
+      setItems((current) => current.filter((item) => item.id !== target.id));
+      if (selectedType === target.type) {
+        setSelectedFile(null);
+        setEditingType(null);
+      }
+      router.refresh();
     });
   }
 
@@ -130,9 +161,9 @@ export function ScheduleBoard({
         </label>
 
         <div className="space-y-2">
-          {scheduleTypes.map((type) => {
+          {cronogramaTypes.map((type) => {
             const active = selectedType === type;
-            const hasImage = schedulesByType.has(type);
+            const hasImage = cronogramasByType.has(type);
 
             return (
               <button
@@ -145,12 +176,15 @@ export function ScheduleBoard({
                 key={type}
                 onClick={() => {
                   setSelectedType(type);
+                  setEditingType(null);
                   setResult({});
                   setSelectedFile(null);
                 }}
                 type="button"
               >
-                <span className="font-semibold">{scheduleTypeLabels[type]}</span>
+                <span className="font-semibold">
+                  {cronogramaTypeLabels[type]}
+                </span>
                 <span
                   className={cn(
                     "rounded-full px-2 py-0.5 text-xs",
@@ -168,11 +202,15 @@ export function ScheduleBoard({
           })}
         </div>
 
-        {canManage ? (
+        {showUploadForm ? (
           <div className="rounded-2xl border border-border bg-background p-4">
             <label className="block space-y-2">
               <span className="text-sm font-medium">
-                Alterar {scheduleTypeLabels[selectedType]}
+                {selectedCronograma ? "Editar" : "Publicar"}{" "}
+                {cronogramaTypeLabels[selectedType]}
+              </span>
+              <span className="block text-xs text-muted-foreground">
+                Periodicidade: {cronogramaPeriodicityLabels[selectedType]}
               </span>
               <input
                 accept=".jpg,.jpeg,.png,.webp"
@@ -214,33 +252,62 @@ export function ScheduleBoard({
 
       <Card className="overflow-hidden p-0">
         <div className="border-b border-border p-5">
-          <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
-            {scheduleTypeLabels[selectedType]}
-          </p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight">
-            Cronograma anual de {year}
-          </h2>
-          {selectedSchedule ? (
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                {cronogramaTypeLabels[selectedType]}
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight">
+                Cronograma de {year}
+              </h2>
+              <div className="mt-3">
+                <Badge>{cronogramaPeriodicityLabels[selectedType]}</Badge>
+              </div>
+            </div>
+            {canManage && selectedCronograma ? (
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  onClick={() => {
+                    setEditingType(selectedType);
+                    setSelectedFile(null);
+                    setResult({});
+                  }}
+                  type="button"
+                  variant="outline"
+                >
+                  Editar
+                </Button>
+                <Button
+                  onClick={() => setDeleting(selectedCronograma)}
+                  type="button"
+                  variant="outline"
+                >
+                  Excluir
+                </Button>
+              </div>
+            ) : null}
+          </div>
+          {selectedCronograma ? (
             <p className="mt-2 text-sm text-muted-foreground">
-              Atualizado por {selectedSchedule.createdBy.name} em{" "}
-              {formatDate(selectedSchedule.updatedAt)}
+              Atualizado por {selectedCronograma.createdBy.name} em{" "}
+              {formatDate(selectedCronograma.updatedAt)}
             </p>
           ) : null}
         </div>
 
         <div className="bg-background p-4 sm:p-6">
-          {selectedSchedule ? (
+          {selectedCronograma ? (
             <a
               className="block overflow-hidden rounded-2xl border border-border bg-card"
-              href={selectedSchedule.imageUrl}
+              href={selectedCronograma.imageUrl}
               rel="noreferrer"
               target="_blank"
             >
               <Image
-                alt={`Cronograma de ${scheduleTypeLabels[selectedType]}`}
+                alt={`Cronograma de ${cronogramaTypeLabels[selectedType]}`}
                 className="h-auto w-full object-contain"
                 height={1600}
-                src={selectedSchedule.imageUrl}
+                src={selectedCronograma.imageUrl}
                 unoptimized
                 width={1200}
               />
@@ -263,6 +330,14 @@ export function ScheduleBoard({
           )}
         </div>
       </Card>
+      <ConfirmDialog
+        description="Essa ação remove a imagem publicada para este tipo e ano. Confirme apenas se deseja excluir o cronograma."
+        onCancel={() => setDeleting(null)}
+        onConfirm={confirmDelete}
+        open={Boolean(deleting)}
+        pending={isPending}
+        title="Excluir cronograma?"
+      />
     </div>
   );
 }

@@ -161,16 +161,6 @@ export function UserForm({
               {...form.register("maritalStatus")}
             />
           </Field>
-          <Field
-            label="Data de início na Umbanda"
-            error={form.formState.errors.umbandaStartDate?.message}
-          >
-            <input
-              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-primary"
-              type="date"
-              {...form.register("umbandaStartDate")}
-            />
-          </Field>
           <label className="flex items-center gap-3 rounded-2xl border border-border bg-background px-4 py-3 text-sm">
             <input
               className="size-4 accent-primary"
@@ -305,6 +295,16 @@ export function UserForm({
             <input
               className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-primary"
               {...form.register("frontEntity")}
+            />
+          </Field>
+          <Field
+            label="Data de início na Umbanda"
+            error={form.formState.errors.umbandaStartDate?.message}
+          >
+            <input
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-primary"
+              type="date"
+              {...form.register("umbandaStartDate")}
             />
           </Field>
           <Field

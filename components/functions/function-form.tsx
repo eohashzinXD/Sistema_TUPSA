@@ -7,43 +7,84 @@ import { useForm } from "react-hook-form";
 
 import {
   createFunctionAction,
-  type FunctionActionResult
+  type FunctionActionResult,
+  updateFunctionAction
 } from "@/actions/functions";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import {
   createFunctionSchema,
-  type CreateFunctionInput
+  type CreateFunctionInput,
+  type UpdateFunctionInput,
+  updateFunctionSchema
 } from "@/lib/validations/functions";
 
-export function FunctionForm() {
+type FunctionFormValues = CreateFunctionInput | UpdateFunctionInput;
+
+type FunctionFormProps = {
+  mode?: "create" | "edit";
+  defaultValues?: UpdateFunctionInput;
+  onCancel?: () => void;
+  onSuccess?: () => void;
+};
+
+export function FunctionForm({
+  mode = "create",
+  defaultValues,
+  onCancel,
+  onSuccess
+}: FunctionFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [result, setResult] = useState<FunctionActionResult>({});
-  const form = useForm<CreateFunctionInput>({
-    resolver: zodResolver(createFunctionSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      startsAt: undefined,
-      endsAt: undefined
-    }
+  const form = useForm<FunctionFormValues>({
+    resolver: zodResolver(
+      mode === "create" ? createFunctionSchema : updateFunctionSchema
+    ),
+    defaultValues:
+      mode === "edit" && defaultValues
+        ? defaultValues
+        : {
+            title: "",
+            description: "",
+            startsAt: undefined,
+            endsAt: undefined
+          }
   });
 
-  function onSubmit(values: CreateFunctionInput) {
+  function closeForm() {
+    if (onCancel) {
+      onCancel();
+      return;
+    }
+
+    router.push("/dashboard/funcoes");
+  }
+
+  function onSubmit(values: FunctionFormValues) {
     startTransition(async () => {
-      const actionResult = await createFunctionAction(values);
+      const actionResult =
+        mode === "create"
+          ? await createFunctionAction(values as CreateFunctionInput)
+          : await updateFunctionAction(values as UpdateFunctionInput);
       setResult(actionResult);
 
       if (actionResult.success) {
-        router.push("/dashboard/funcoes");
-        router.refresh();
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          router.push("/dashboard/funcoes");
+          router.refresh();
+        }
       }
     });
   }
 
   return (
     <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+      {"id" in form.getValues() ? (
+        <input type="hidden" {...form.register("id")} />
+      ) : null}
       <Card>
         <CardTitle>Dados da função</CardTitle>
         <CardDescription>
@@ -101,7 +142,7 @@ export function FunctionForm() {
       ) : null}
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <Button
-          onClick={() => router.push("/dashboard/funcoes")}
+          onClick={closeForm}
           type="button"
           variant="outline"
         >

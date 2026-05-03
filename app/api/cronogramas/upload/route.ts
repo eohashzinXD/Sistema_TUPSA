@@ -2,25 +2,25 @@ import { NextResponse } from "next/server";
 import path from "path";
 
 import { auth } from "@/auth";
-import { isPaiDeSanto } from "@/actions/schedules";
+import { hasPermission } from "@/lib/permissions";
 
-const MAX_SCHEDULE_IMAGE_SIZE = 4 * 1024 * 1024;
-const allowedScheduleImageExtensions = new Set([
+const MAX_CRONOGRAMA_IMAGE_SIZE = 4 * 1024 * 1024;
+const allowedCronogramaImageExtensions = new Set([
   ".jpeg",
   ".jpg",
   ".png",
   ".webp"
 ]);
-const allowedScheduleImageMimeTypes = new Set([
+const allowedCronogramaImageMimeTypes = new Set([
   "image/jpeg",
   "image/png",
   "image/webp"
 ]);
 
-function getSafeScheduleImageExtension(fileName: string) {
+function getSafeCronogramaImageExtension(fileName: string) {
   const extension = path.extname(fileName).toLowerCase();
 
-  if (!allowedScheduleImageExtensions.has(extension)) {
+  if (!allowedCronogramaImageExtensions.has(extension)) {
     return null;
   }
 
@@ -30,12 +30,12 @@ function getSafeScheduleImageExtension(fileName: string) {
 export async function POST(request: Request) {
   const session = await auth();
   if (!session) {
-    return NextResponse.json({ error: "NÃ£o autenticado" }, { status: 401 });
+    return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }
 
-  const canManage = await isPaiDeSanto(session.user.id);
-  if (!canManage) {
-    return NextResponse.json({ error: "Sem permissÃ£o" }, { status: 403 });
+  const allowed = await hasPermission(session.user.id, "cronogramas:manage");
+  if (!allowed) {
+    return NextResponse.json({ error: "Sem permissão" }, { status: 403 });
   }
 
   const formData = await request.formData();
@@ -48,15 +48,15 @@ export async function POST(request: Request) {
     );
   }
 
-  if (file.size > MAX_SCHEDULE_IMAGE_SIZE) {
+  if (file.size > MAX_CRONOGRAMA_IMAGE_SIZE) {
     return NextResponse.json(
-      { error: "A imagem deve ter no mÃ¡ximo 4 MB" },
+      { error: "A imagem deve ter no máximo 4 MB" },
       { status: 400 }
     );
   }
 
-  const extension = getSafeScheduleImageExtension(file.name);
-  if (!extension || !allowedScheduleImageMimeTypes.has(file.type)) {
+  const extension = getSafeCronogramaImageExtension(file.name);
+  if (!extension || !allowedCronogramaImageMimeTypes.has(file.type)) {
     return NextResponse.json(
       { error: "Use uma imagem JPG, PNG ou WEBP" },
       { status: 400 }

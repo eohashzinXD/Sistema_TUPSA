@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 
-import { isPaiDeSanto } from "@/actions/schedules";
 import { auth } from "@/auth";
+import { hasPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { SYSTEM_SETTINGS_ID } from "@/lib/settings";
 import {
@@ -23,10 +23,10 @@ async function ensureCanManageSettings(): Promise<
   | SystemSettingsActionResult
 > {
   const session = await auth();
-  if (!session) return { error: "Nao autenticado" };
+  if (!session) return { error: "Não autenticado" };
 
-  const canManage = await isPaiDeSanto(session.user.id);
-  if (!canManage) return { error: "Sem permissao" };
+  const canManage = await hasPermission(session.user.id, "settings:manage");
+  if (!canManage) return { error: "Sem permissão" };
 
   return { allowed: true };
 }
@@ -39,7 +39,7 @@ export async function updateSystemSettingsAction(
 
   const parsed = updateSystemSettingsSchema.safeParse(input);
   if (!parsed.success) {
-    return { error: "Dados invalidos" };
+    return { error: "Dados inválidos" };
   }
 
   await prisma.systemSettings.upsert({
@@ -61,5 +61,5 @@ export async function updateSystemSettingsAction(
   revalidatePath("/dashboard/usuarios/relatorio");
   revalidatePath("/dashboard/usuarios/[userId]/relatorio", "page");
 
-  return { success: "Configuracoes atualizadas" };
+  return { success: "Configurações atualizadas" };
 }
