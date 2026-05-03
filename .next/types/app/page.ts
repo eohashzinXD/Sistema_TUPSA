@@ -1,4 +1,4 @@
-// File: C:\Users\Administrator\Downloads\Projetos\Sistema_TUPSA\app\page.tsx
+// File: /home/eohashzin/Projetos/Sistema_TUPSA/app/page.tsx
 import * as entry from '../../../app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
