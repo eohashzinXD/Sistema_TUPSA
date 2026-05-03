@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { auth } from "@/auth";
+import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { UserForm } from "@/components/users/user-form";
 import { orixaOptions, type OrixaCode } from "@/lib/amaci";
@@ -10,6 +12,7 @@ import {
   leftObligationOptions,
   rightObligationOptions
 } from "@/lib/validations/users";
+import { cn } from "@/lib/utils";
 
 type EditUserPageProps = {
   params: {
@@ -136,13 +139,21 @@ export default async function EditUserPage({ params }: EditUserPageProps) {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
-      <section>
+      <section className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
         <p className="text-sm font-medium uppercase tracking-[0.24em] text-muted-foreground">
           Usuários
         </p>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight">
           Editar usuário
         </h1>
+        </div>
+        <Link
+          className={cn(buttonVariants({ variant: "outline" }), "shrink-0")}
+          href={`/dashboard/usuarios/${data.user.id}/relatorio`}
+        >
+          Relatorio PDF
+        </Link>
       </section>
       <UserForm
         defaultValues={{

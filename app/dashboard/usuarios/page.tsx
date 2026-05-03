@@ -99,10 +99,16 @@ export default async function UsersPage() {
           </p>
         </div>
         <Link
+          className={cn(buttonVariants({ variant: "outline" }), "shrink-0")}
+          href="/dashboard/usuarios/relatorio"
+        >
+          Relatorio geral
+        </Link>
+        <Link
           className={cn(buttonVariants(), "shrink-0")}
           href="/dashboard/usuarios/novo"
         >
-          Novo usuário
+          Novo usuario
         </Link>
       </section>
       <div className="grid gap-4">
@@ -234,6 +240,12 @@ export default async function UsersPage() {
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
+                <Link
+                  className={cn(buttonVariants({ variant: "outline" }))}
+                  href={`/dashboard/usuarios/${user.id}/relatorio`}
+                >
+                  Relatorio PDF
+                </Link>
                 <Link
                   className={cn(buttonVariants({ variant: "outline" }))}
                   href={`/dashboard/usuarios/${user.id}`}
