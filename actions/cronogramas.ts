@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { ScheduleType } from "@prisma/client";
 
 import { auth } from "@/auth";
 import { hasPermission } from "@/lib/permissions";
@@ -51,11 +52,15 @@ export async function upsertCronogramaAction(
     return { error: "Dados inválidos" };
   }
 
+  const month =
+    parsed.data.type === ScheduleType.GIRAS ? parsed.data.month ?? 1 : 1;
+
   await prisma.schedule.upsert({
     where: {
-      type_year: {
+      type_year_month: {
         type: parsed.data.type,
-        year: parsed.data.year
+        year: parsed.data.year,
+        month
       }
     },
     update: {
@@ -65,6 +70,7 @@ export async function upsertCronogramaAction(
     create: {
       type: parsed.data.type,
       year: parsed.data.year,
+      month,
       imageUrl: parsed.data.imageUrl,
       createdById: permission.userId
     }

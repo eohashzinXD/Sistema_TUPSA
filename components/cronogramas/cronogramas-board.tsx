@@ -18,13 +18,15 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   cronogramaPeriodicityLabels,
   cronogramaTypeLabels,
-  cronogramaTypes
+  cronogramaTypes,
+  monthLabels
 } from "@/lib/validations/cronogramas";
 import { cn } from "@/lib/utils";
 
 type CronogramaItem = {
   id: string;
   type: ScheduleType;
+  month: number;
   imageUrl: string;
   updatedAt: string;
   createdBy: {
@@ -35,6 +37,8 @@ type CronogramaItem = {
 type CronogramasBoardProps = {
   canManage: boolean;
   cronogramas: CronogramaItem[];
+  initialType: ScheduleType;
+  month: number;
   year: number;
 };
 
@@ -67,12 +71,12 @@ function formatDate(date: string) {
 export function CronogramasBoard({
   canManage,
   cronogramas,
+  initialType,
+  month,
   year
 }: CronogramasBoardProps) {
   const router = useRouter();
-  const [selectedType, setSelectedType] = useState<ScheduleType>(
-    ScheduleType.FESTAS
-  );
+  const [selectedType, setSelectedType] = useState<ScheduleType>(initialType);
   const [items, setItems] = useState(cronogramas);
   const [editingType, setEditingType] = useState<ScheduleType | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -85,13 +89,45 @@ export function CronogramasBoard({
     [items]
   );
   const selectedCronograma = cronogramasByType.get(selectedType);
+  const usesMonthlyFilter = selectedType === ScheduleType.GIRAS;
   const showUploadForm =
     canManage && (!selectedCronograma || editingType === selectedType);
+
+  function buildCronogramasUrl(next: {
+    type?: ScheduleType;
+    year?: number;
+    month?: number;
+  }) {
+    const type = next.type ?? selectedType;
+    const selectedYear = next.year ?? year;
+    const selectedMonth = next.month ?? month;
+    const params = new URLSearchParams({
+      type,
+      year: String(selectedYear)
+    });
+
+    if (type === ScheduleType.GIRAS) {
+      params.set("month", String(selectedMonth));
+    }
+
+    return `/dashboard/cronogramas?${params.toString()}`;
+  }
 
   function onYearChange(value: string) {
     if (!value) return;
 
-    router.push(`/dashboard/cronogramas?year=${value}`);
+    router.push(buildCronogramasUrl({ year: Number(value) }));
+  }
+
+  function onMonthChange(value: string) {
+    if (!value) return;
+
+    router.push(
+      buildCronogramasUrl({
+        type: ScheduleType.GIRAS,
+        month: Number(value)
+      })
+    );
   }
 
   function onSubmit() {
@@ -112,6 +148,7 @@ export function CronogramasBoard({
       const actionResult = await upsertCronogramaAction({
         type: selectedType,
         year,
+        month: selectedType === ScheduleType.GIRAS ? month : undefined,
         imageUrl: uploadResult.url
       });
 
@@ -148,17 +185,34 @@ export function CronogramasBoard({
   return (
     <div className="grid gap-5 lg:grid-cols-[280px_1fr]">
       <Card className="space-y-5 p-5">
-        <label className="block space-y-2">
-          <span className="text-sm font-medium">Ano</span>
-          <input
-            className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-primary"
-            defaultValue={String(year)}
-            max={2100}
-            min={2020}
-            onChange={(event) => onYearChange(event.target.value)}
-            type="number"
-          />
-        </label>
+        {usesMonthlyFilter ? (
+          <label className="block space-y-2">
+            <span className="text-sm font-medium">Mês</span>
+            <select
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-primary"
+              onChange={(event) => onMonthChange(event.target.value)}
+              value={month}
+            >
+              {monthLabels.map((label, index) => (
+                <option key={label} value={index + 1}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : (
+          <label className="block space-y-2">
+            <span className="text-sm font-medium">Ano</span>
+            <input
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-primary"
+              defaultValue={String(year)}
+              max={2100}
+              min={2020}
+              onChange={(event) => onYearChange(event.target.value)}
+              type="number"
+            />
+          </label>
+        )}
 
         <div className="space-y-2">
           {cronogramaTypes.map((type) => {
@@ -179,6 +233,7 @@ export function CronogramasBoard({
                   setEditingType(null);
                   setResult({});
                   setSelectedFile(null);
+                  router.push(buildCronogramasUrl({ type }));
                 }}
                 type="button"
               >
@@ -211,6 +266,7 @@ export function CronogramasBoard({
               </span>
               <span className="block text-xs text-muted-foreground">
                 Periodicidade: {cronogramaPeriodicityLabels[selectedType]}
+                {usesMonthlyFilter ? ` - ${monthLabels[month - 1]}` : ""}
               </span>
               <input
                 accept=".jpg,.jpeg,.png,.webp"
@@ -258,7 +314,9 @@ export function CronogramasBoard({
                 {cronogramaTypeLabels[selectedType]}
               </p>
               <h2 className="mt-2 text-2xl font-semibold tracking-tight">
-                Cronograma de {year}
+                {usesMonthlyFilter
+                  ? `Cronograma de ${monthLabels[month - 1]}`
+                  : `Cronograma de ${year}`}
               </h2>
               <div className="mt-3">
                 <Badge>{cronogramaPeriodicityLabels[selectedType]}</Badge>
@@ -331,7 +389,7 @@ export function CronogramasBoard({
         </div>
       </Card>
       <ConfirmDialog
-        description="Essa ação remove a imagem publicada para este tipo e ano. Confirme apenas se deseja excluir o cronograma."
+        description="Essa ação remove a imagem publicada para este período. Confirme apenas se deseja excluir o cronograma."
         onCancel={() => setDeleting(null)}
         onConfirm={confirmDelete}
         open={Boolean(deleting)}

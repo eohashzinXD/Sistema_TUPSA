@@ -1,3 +1,4 @@
+import { ScheduleType } from "@prisma/client";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/auth";
@@ -5,10 +6,13 @@ import { CronogramasBoard } from "@/components/cronogramas/cronogramas-board";
 import { Card } from "@/components/ui/card";
 import { hasPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
+import { monthLabels } from "@/lib/validations/cronogramas";
 
 type CronogramasPageProps = {
   searchParams?: {
+    type?: string;
     year?: string;
+    month?: string;
   };
 };
 
@@ -29,6 +33,30 @@ function getSelectedYear(value?: string) {
   return year;
 }
 
+function getSelectedMonth(value?: string) {
+  const fallback = new Date().getMonth() + 1;
+
+  if (!value || !/^\d{1,2}$/.test(value)) {
+    return fallback;
+  }
+
+  const month = Number(value);
+
+  if (month < 1 || month > 12) {
+    return fallback;
+  }
+
+  return month;
+}
+
+function getSelectedType(value?: string): ScheduleType {
+  if (value && Object.values(ScheduleType).includes(value as ScheduleType)) {
+    return value as ScheduleType;
+  }
+
+  return ScheduleType.FESTAS;
+}
+
 export default async function CronogramasPage({
   searchParams
 }: CronogramasPageProps) {
@@ -45,9 +73,23 @@ export default async function CronogramasPage({
   }
 
   const selectedYear = getSelectedYear(searchParams?.year);
+  const selectedMonth = getSelectedMonth(searchParams?.month);
+  const selectedType = getSelectedType(searchParams?.type);
   const cronogramas = await prisma.schedule.findMany({
     where: {
-      year: selectedYear
+      year: selectedYear,
+      OR: [
+        {
+          type: ScheduleType.GIRAS,
+          month: selectedMonth
+        },
+        {
+          type: {
+            in: [ScheduleType.FESTAS, ScheduleType.AMACIS]
+          },
+          month: 1
+        }
+      ]
     },
     orderBy: {
       type: "asc"
@@ -55,6 +97,7 @@ export default async function CronogramasPage({
     select: {
       id: true,
       type: true,
+      month: true,
       imageUrl: true,
       updatedAt: true,
       createdBy: {
@@ -76,17 +119,19 @@ export default async function CronogramasPage({
           Cronogramas
         </p>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-          Festas, amacis e giras do ano
+          Festas, amacis e giras
         </h1>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          Filtre por ano e abra o cronograma pelo tipo. Apenas o pai de santo
-          pode substituir as imagens publicadas.
+          Festas e amacis usam filtro anual. Giras usam filtro mensal; mês
+          atual: {monthLabels[selectedMonth - 1]}.
         </p>
       </section>
 
       <CronogramasBoard
         canManage={canManage}
         cronogramas={cronogramaItems}
+        initialType={selectedType}
+        month={selectedMonth}
         year={selectedYear}
       />
     </div>

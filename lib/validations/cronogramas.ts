@@ -10,7 +10,7 @@ export const cronogramaTypes = [
 export const cronogramaTypeLabels: Record<ScheduleType, string> = {
   FESTAS: "Festas",
   AMACIS: "Amacis",
-  GIRAS: "Giras do ano"
+  GIRAS: "Giras do mês"
 };
 
 export const cronogramaPeriodicityLabels: Record<ScheduleType, string> = {
@@ -19,13 +19,37 @@ export const cronogramaPeriodicityLabels: Record<ScheduleType, string> = {
   GIRAS: "Mensal"
 };
 
+export const monthLabels = [
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro"
+] as const;
+
 export const cronogramaYearSchema = z.object({
   year: z.coerce.number().int().min(2020).max(2100)
 });
 
 export const upsertCronogramaSchema = cronogramaYearSchema.extend({
   type: z.nativeEnum(ScheduleType),
+  month: z.coerce.number().int().min(1).max(12).optional(),
   imageUrl: z.string().min(1, "Envie uma imagem do cronograma")
+}).superRefine((value, context) => {
+  if (value.type === ScheduleType.GIRAS && !value.month) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["month"],
+      message: "Informe o mês da gira"
+    });
+  }
 });
 
 export const deleteCronogramaSchema = z.object({
