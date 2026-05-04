@@ -20,6 +20,8 @@ const permissions = [
   ["amaci:manage", "Gerenciar amaci dos filhos"],
   ["monthly-fees:read", "Visualizar mensalidades"],
   ["monthly-fees:manage", "Gerenciar mensalidades dos filhos"],
+  ["board:read", "Visualizar diretoria da casa"],
+  ["birthdays:read", "Visualizar aniversariantes do mês"],
   ["cronogramas:read", "Visualizar cronogramas"],
   ["cronogramas:manage", "Gerenciar cronogramas"],
   ["settings:manage", "Gerenciar configuracoes do terreiro"],
@@ -36,6 +38,16 @@ const roleDefinitions = [
     permissions: permissions.map(([key]) => key)
   },
   {
+    name: "pai-pequeno",
+    description: "Apoio direto à administração espiritual e operacional da casa",
+    permissions: permissions.map(([key]) => key)
+  },
+  {
+    name: "mãe-pequena",
+    description: "Apoio direto à administração espiritual e operacional da casa",
+    permissions: permissions.map(([key]) => key)
+  },
+  {
     name: "filho-de-santo",
     description: "Membro da corrente com acesso aos conteúdos gerais",
     permissions: [
@@ -44,6 +56,8 @@ const roleDefinitions = [
       "points:read",
       "functions:read",
       "amaci:read",
+      "board:read",
+      "birthdays:read",
       "cronogramas:read",
       "monthly-fees:read",
       "notifications:read"
@@ -60,6 +74,8 @@ const roleDefinitions = [
       "points:delete",
       "functions:read",
       "amaci:read",
+      "board:read",
+      "birthdays:read",
       "cronogramas:read",
       "monthly-fees:read",
       "notifications:read"

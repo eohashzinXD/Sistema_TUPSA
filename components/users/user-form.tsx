@@ -59,6 +59,8 @@ export function UserForm({
             email: "",
             password: "",
             phone: "",
+            rg: "",
+            dateOfBirth: "",
             address: "",
             maritalStatus: "",
             hasAllergies: false,
@@ -139,6 +141,24 @@ export function UserForm({
               inputMode="tel"
               placeholder="(00) 00000-0000"
               {...form.register("phone")}
+            />
+          </Field>
+          <Field label="RG" error={form.formState.errors.rg?.message}>
+            <input
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-primary"
+              inputMode="text"
+              placeholder="00.000.000-0"
+              {...form.register("rg")}
+            />
+          </Field>
+          <Field
+            label="Data de nascimento"
+            error={form.formState.errors.dateOfBirth?.message}
+          >
+            <input
+              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-primary"
+              type="date"
+              {...form.register("dateOfBirth")}
             />
           </Field>
           <Field

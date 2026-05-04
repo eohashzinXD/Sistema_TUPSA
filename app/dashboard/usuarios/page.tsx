@@ -18,6 +18,8 @@ async function getUsers() {
       name: true,
       email: true,
       phone: true,
+      rg: true,
+      dateOfBirth: true,
       address: true,
       maritalStatus: true,
       hasAllergies: true,
@@ -144,6 +146,18 @@ export default async function UsersPage() {
                       Telefone:
                     </span>{" "}
                     {user.phone ?? "Não informado"}
+                  </p>
+                  <p>
+                    <span className="font-medium text-foreground">RG:</span>{" "}
+                    {user.rg ?? "Não informado"}
+                  </p>
+                  <p>
+                    <span className="font-medium text-foreground">
+                      Nascimento:
+                    </span>{" "}
+                    {user.dateOfBirth
+                      ? formatDate(user.dateOfBirth)
+                      : "Não informado"}
                   </p>
                   <p>
                     <span className="font-medium text-foreground">

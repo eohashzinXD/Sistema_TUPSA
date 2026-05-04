@@ -3,11 +3,13 @@ export type NavigationIcon =
   | "book"
   | "calendar"
   | "calendar-days"
+  | "cake"
   | "droplets"
   | "folder"
   | "home"
   | "megaphone"
   | "settings"
+  | "shield"
   | "wallet"
   | "music"
   | "users";
@@ -62,6 +64,20 @@ export const dashboardNavigation: NavigationItem[] = [
     description: "Controle dos banhos por orixá",
     icon: "droplets",
     permissions: ["amaci:read"]
+  },
+  {
+    title: "Diretoria",
+    href: "/dashboard/diretoria",
+    description: "Responsáveis pela condução da casa",
+    icon: "shield",
+    permissions: ["board:read"]
+  },
+  {
+    title: "Aniversariantes",
+    href: "/dashboard/aniversariantes",
+    description: "Membros que fazem aniversário no mês",
+    icon: "cake",
+    permissions: ["birthdays:read"]
   },
   {
     title: "Mensalidades",

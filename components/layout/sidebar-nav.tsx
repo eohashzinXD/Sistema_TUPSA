@@ -3,6 +3,7 @@
 import {
   Bell,
   BookOpenText,
+  Cake,
   CalendarDays,
   CalendarClock,
   Droplets,
@@ -11,6 +12,7 @@ import {
   Megaphone,
   Music2,
   Settings,
+  ShieldCheck,
   Users,
   WalletCards
 } from "lucide-react";
@@ -28,6 +30,7 @@ type SidebarNavProps = {
 const navigationIcons: Record<NavigationIcon, typeof Home> = {
   bell: Bell,
   book: BookOpenText,
+  cake: Cake,
   calendar: CalendarClock,
   "calendar-days": CalendarDays,
   droplets: Droplets,
@@ -36,6 +39,7 @@ const navigationIcons: Record<NavigationIcon, typeof Home> = {
   megaphone: Megaphone,
   music: Music2,
   settings: Settings,
+  shield: ShieldCheck,
   users: Users,
   wallet: WalletCards
 };
