@@ -4,7 +4,7 @@ import { ScheduleType } from "@prisma/client";
 import { ImagePlus, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 
 import {
   deleteCronogramaAction,
@@ -78,6 +78,7 @@ export function CronogramasBoard({
   const router = useRouter();
   const [selectedType, setSelectedType] = useState<ScheduleType>(initialType);
   const [items, setItems] = useState(cronogramas);
+  const [selectedMonth, setSelectedMonth] = useState(month);
   const [editingType, setEditingType] = useState<ScheduleType | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [deleting, setDeleting] = useState<CronogramaItem | null>(null);
@@ -93,6 +94,18 @@ export function CronogramasBoard({
   const showUploadForm =
     canManage && (!selectedCronograma || editingType === selectedType);
 
+  useEffect(() => {
+    setSelectedType(initialType);
+  }, [initialType]);
+
+  useEffect(() => {
+    setItems(cronogramas);
+  }, [cronogramas]);
+
+  useEffect(() => {
+    setSelectedMonth(month);
+  }, [month]);
+
   function buildCronogramasUrl(next: {
     type?: ScheduleType;
     year?: number;
@@ -100,14 +113,14 @@ export function CronogramasBoard({
   }) {
     const type = next.type ?? selectedType;
     const selectedYear = next.year ?? year;
-    const selectedMonth = next.month ?? month;
+    const nextMonth = next.month ?? selectedMonth;
     const params = new URLSearchParams({
       type,
       year: String(selectedYear)
     });
 
     if (type === ScheduleType.GIRAS) {
-      params.set("month", String(selectedMonth));
+      params.set("month", String(nextMonth));
     }
 
     return `/dashboard/cronogramas?${params.toString()}`;
@@ -122,10 +135,12 @@ export function CronogramasBoard({
   function onMonthChange(value: string) {
     if (!value) return;
 
+    const nextMonth = Number(value);
+    setSelectedMonth(nextMonth);
     router.push(
       buildCronogramasUrl({
         type: ScheduleType.GIRAS,
-        month: Number(value)
+        month: nextMonth
       })
     );
   }
@@ -148,7 +163,8 @@ export function CronogramasBoard({
       const actionResult = await upsertCronogramaAction({
         type: selectedType,
         year,
-        month: selectedType === ScheduleType.GIRAS ? month : undefined,
+        month:
+          selectedType === ScheduleType.GIRAS ? selectedMonth : undefined,
         imageUrl: uploadResult.url
       });
 
@@ -191,7 +207,7 @@ export function CronogramasBoard({
             <select
               className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-primary"
               onChange={(event) => onMonthChange(event.target.value)}
-              value={month}
+              value={String(selectedMonth)}
             >
               {monthLabels.map((label, index) => (
                 <option key={label} value={index + 1}>
@@ -266,7 +282,9 @@ export function CronogramasBoard({
               </span>
               <span className="block text-xs text-muted-foreground">
                 Periodicidade: {cronogramaPeriodicityLabels[selectedType]}
-                {usesMonthlyFilter ? ` - ${monthLabels[month - 1]}` : ""}
+                {usesMonthlyFilter
+                  ? ` - ${monthLabels[selectedMonth - 1]}`
+                  : ""}
               </span>
               <input
                 accept=".jpg,.jpeg,.png,.webp"
@@ -315,7 +333,7 @@ export function CronogramasBoard({
               </p>
               <h2 className="mt-2 text-2xl font-semibold tracking-tight">
                 {usesMonthlyFilter
-                  ? `Cronograma de ${monthLabels[month - 1]}`
+                  ? `Cronograma de ${monthLabels[selectedMonth - 1]}`
                   : `Cronograma de ${year}`}
               </h2>
               <div className="mt-3">
