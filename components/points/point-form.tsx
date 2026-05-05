@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
+import posthog from "posthog-js";
+
 import {
   createPointAction,
   type PointActionResult,
@@ -99,6 +101,11 @@ export function PointForm({
       setResult(actionResult);
 
       if (actionResult.success) {
+        posthog.capture(mode === "create" ? "point_created" : "point_updated", {
+          visibility: values.visibility,
+          has_audio: Boolean((values as CreatePointInput).audioUrl)
+        });
+
         if (mode === "create") {
           router.push("/dashboard/pontos");
         }

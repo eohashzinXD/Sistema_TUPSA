@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
+import posthog from "posthog-js";
+
 import {
   sendNotificationAction,
   type NotificationActionResult
@@ -78,6 +80,11 @@ export function NotificationForm({
       setResult(actionResult);
 
       if (actionResult.success) {
+        posthog.capture("notification_sent", {
+          notification_type: values.type,
+          target_type: values.targetType
+        });
+
         form.reset();
         router.refresh();
       }

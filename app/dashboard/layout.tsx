@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { auth } from "@/auth";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
+import { PostHogIdentify } from "@/components/posthog-identify";
 import { getNavigationByPermissions } from "@/lib/navigation";
 import { prisma } from "@/lib/prisma";
 
@@ -34,12 +35,19 @@ export default async function DashboardLayout({
   const unreadNotifications = await getUnreadNotificationCount(session.user.id);
 
   return (
-    <DashboardShell
-      navigationItems={navigationItems}
-      unreadNotifications={unreadNotifications}
-      userName={session.user.name}
-    >
-      {children}
-    </DashboardShell>
+    <>
+      <PostHogIdentify
+        userId={session.user.id}
+        email={session.user.email}
+        name={session.user.name}
+      />
+      <DashboardShell
+        navigationItems={navigationItems}
+        unreadNotifications={unreadNotifications}
+        userName={session.user.name}
+      >
+        {children}
+      </DashboardShell>
+    </>
   );
 }

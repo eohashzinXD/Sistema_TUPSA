@@ -5,6 +5,7 @@ import path from "path";
 
 import { auth } from "@/auth";
 import { hasPermission } from "@/lib/permissions";
+import { getPostHogClient } from "@/lib/posthog-server";
 
 const MAX_STUDY_FILE_SIZE = 10 * 1024 * 1024;
 const STUDY_UPLOAD_DIR = path.join(process.cwd(), "public", "uploads", "studies");
@@ -81,6 +82,17 @@ export async function POST(request: Request) {
   const bytes = Buffer.from(await file.arrayBuffer());
 
   await writeFile(filePath, bytes);
+
+  const posthog = getPostHogClient();
+  posthog.capture({
+    distinctId: session.user.id,
+    event: "study_file_uploaded",
+    properties: {
+      file_extension: extension,
+      file_size_bytes: file.size
+    }
+  });
+  await posthog.shutdown();
 
   return NextResponse.json({
     success: "Arquivo enviado",

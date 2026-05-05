@@ -80,6 +80,49 @@ const roleDefinitions = [
       "monthly-fees:read",
       "notifications:read"
     ]
+  },
+  {
+    name: "Tesouraria",
+    description: "Responsável pela gestão financeira da casa",
+    permissions: [
+      "dashboard:read",
+      "monthly-fees:read",
+      "monthly-fees:manage",
+      "notifications:read"
+    ]
+  },
+  {
+    name: "Secretaria",
+    description: "Responsável pela comunicação e organização administrativa",
+    permissions: [
+      "dashboard:read",
+      "users:manage",
+      "categories:manage",
+      "cronogramas:manage",
+      "notifications:read",
+      "notifications:create"
+    ]
+  },
+  {
+    name: "Diretores Gerais",
+    description: "Membros da diretoria com acesso a gestão geral da casa",
+    permissions: [
+      "dashboard:read",
+      "study:read",
+      "points:read",
+      "functions:read",
+      "amaci:read",
+      "board:read",
+      "birthdays:read",
+      "cronogramas:read",
+      "monthly-fees:read",
+      "notifications:read"
+    ]
+  },
+  {
+    name: "Desenvolvedor do Sistema",
+    description: "Acesso total para desenvolvimento e manutenção do sistema",
+    permissions: permissions.map(([key]) => key)
   }
 ] as const;
 

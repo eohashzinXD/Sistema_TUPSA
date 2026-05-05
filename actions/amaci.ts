@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { hasPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
+import { getPostHogClient } from "@/lib/posthog-server";
 import {
   toggleAmaciBathSchema,
   type ToggleAmaciBathInput,
@@ -118,6 +119,18 @@ export async function toggleAmaciBathAction(
   }
 
   revalidatePath("/dashboard/amaci");
+
+  const posthog = getPostHogClient();
+  posthog.capture({
+    distinctId: session.user.id,
+    event: "amaci_bath_toggled",
+    properties: {
+      target_user_id: parsed.data.userId,
+      orixa: parsed.data.orixa,
+      checked: parsed.data.checked
+    }
+  });
+  await posthog.shutdown();
 
   return {
     success: parsed.data.checked ? "Banho marcado" : "Banho desmarcado"

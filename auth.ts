@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import { getUserPermissionKeys } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
+import { getPostHogClient } from "@/lib/posthog-server";
 
 const credentialsSchema = z.object({
   email: z.string().email().trim().toLowerCase(),
@@ -68,6 +69,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         }
 
         const permissions = await getUserPermissionKeys(user.id);
+
+        const posthog = getPostHogClient();
+        posthog.identify({ distinctId: user.id, properties: { email: user.email, name: user.name } });
+        posthog.capture({ distinctId: user.id, event: "user_authenticated", properties: { email: user.email } });
+        await posthog.shutdown();
 
         return {
           id: user.id,

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+import { PostHogInit } from "@/components/posthog-init";
+
 export const metadata: Metadata = {
   title: "Gestão da Casa",
   description: "Sistema interno de estudos, pontos e comunicados"
@@ -32,7 +34,10 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <PostHogInit />
+        {children}
+      </body>
     </html>
   );
 }

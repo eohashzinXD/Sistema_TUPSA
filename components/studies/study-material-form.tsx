@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
+import posthog from "posthog-js";
+
 import {
   createStudyMaterialAction,
   type StudyMaterialActionResult,
@@ -149,6 +151,11 @@ export function StudyMaterialForm({
       setResult(actionResult);
 
       if (actionResult.success) {
+        posthog.capture(mode === "create" ? "study_material_created" : "study_material_updated", {
+          material_type: values.type,
+          visibility: values.visibility
+        });
+
         if (mode === "create") {
           router.push("/dashboard/estudos");
         }

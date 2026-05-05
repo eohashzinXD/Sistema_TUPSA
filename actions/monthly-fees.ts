@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { hasPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
+import { getPostHogClient } from "@/lib/posthog-server";
 import {
   monthlyPaymentSchema,
   type MonthlyPaymentInput
@@ -68,6 +69,19 @@ export async function setMonthlyPaymentAction(
   revalidatePath("/dashboard/mensalidades");
   revalidatePath("/dashboard/usuarios");
   revalidatePath(`/dashboard/usuarios/${parsed.data.userId}`);
+
+  const posthog = getPostHogClient();
+  posthog.capture({
+    distinctId: session.user.id,
+    event: "monthly_payment_marked",
+    properties: {
+      target_user_id: parsed.data.userId,
+      year: parsed.data.year,
+      month: parsed.data.month,
+      paid: parsed.data.paid
+    }
+  });
+  await posthog.shutdown();
 
   return { success: "Mensalidade atualizada" };
 }
