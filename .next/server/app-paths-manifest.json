@@ -1,7 +1,3 @@
 {
-  "/(auth)/login/page": "app/(auth)/login/page.js",
-  "/dashboard/usuarios/[userId]/page": "app/dashboard/usuarios/[userId]/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/dashboard/cronogramas/page": "app/dashboard/cronogramas/page.js",
-  "/dashboard/funcoes/page": "app/dashboard/funcoes/page.js"
+  "/dashboard/aniversariantes/page": "app/dashboard/aniversariantes/page.js"
 }

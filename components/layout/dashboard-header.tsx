@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { logoutAction } from "@/actions/auth";
 import { MobileSidebar } from "@/components/layout/mobile-sidebar";
+import { PushNotificationToggle } from "@/components/notifications/push-notification-toggle";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,12 +13,14 @@ type DashboardHeaderProps = {
   userName?: string | null;
   unreadNotifications: number;
   navigationItems: NavigationItem[];
+  pushPublicKey?: string;
 };
 
 export function DashboardHeader({
   userName,
   unreadNotifications,
-  navigationItems
+  navigationItems,
+  pushPublicKey
 }: DashboardHeaderProps) {
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur">
@@ -35,6 +38,7 @@ export function DashboardHeader({
         </div>
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <ThemeToggle />
+          <PushNotificationToggle publicKey={pushPublicKey} />
           <Link href="/dashboard/notificacoes">
             <Badge className="hidden gap-2 bg-card text-foreground transition hover:bg-muted sm:inline-flex">
               <Bell className="size-3.5" aria-hidden="true" />

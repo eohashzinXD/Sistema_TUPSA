@@ -43,6 +43,7 @@ export default async function DashboardLayout({
       />
       <DashboardShell
         navigationItems={navigationItems}
+        pushPublicKey={process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY}
         unreadNotifications={unreadNotifications}
         userName={session.user.name}
       >

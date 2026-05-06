@@ -9,13 +9,15 @@ type DashboardShellProps = {
   userName?: string | null;
   unreadNotifications: number;
   navigationItems: NavigationItem[];
+  pushPublicKey?: string;
 };
 
 export function DashboardShell({
   children,
   userName,
   unreadNotifications,
-  navigationItems
+  navigationItems,
+  pushPublicKey
 }: DashboardShellProps) {
   return (
     <div className="min-h-screen bg-background">
@@ -38,6 +40,7 @@ export function DashboardShell({
       <div className="lg:pl-80">
         <DashboardHeader
           navigationItems={navigationItems}
+          pushPublicKey={pushPublicKey}
           unreadNotifications={unreadNotifications}
           userName={userName}
         />

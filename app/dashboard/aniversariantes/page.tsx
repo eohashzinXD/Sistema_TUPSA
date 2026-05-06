@@ -121,12 +121,6 @@ export default async function BirthdaysPage() {
               </div>
               <dl className="mt-5 grid gap-3 text-sm">
                 <div>
-                  <dt className="font-medium text-foreground">Idade</dt>
-                  <dd className="mt-1 text-muted-foreground">
-                    {calculateAge(user.dateOfBirth, today)} anos
-                  </dd>
-                </div>
-                <div>
                   <dt className="font-medium text-foreground">Telefone</dt>
                   <dd className="mt-1 text-muted-foreground">
                     {user.phone ?? "Não informado"}

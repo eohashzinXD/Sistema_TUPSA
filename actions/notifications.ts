@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import { resolveRecipientUserIds } from "@/lib/content-visibility";
 import { hasPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
+import { sendPushNotificationToUsers } from "@/lib/push-notifications";
 import {
   notificationRecipientIdSchema,
   sendNotificationSchema,
@@ -141,6 +142,13 @@ export async function sendNotificationAction(
         }
       }
     }
+  });
+
+  await sendPushNotificationToUsers(recipientUserIds, {
+    title: parsed.data.title,
+    message: parsed.data.message,
+    type: parsed.data.type,
+    link: parsed.data.link
   });
 
   revalidatePath("/dashboard/notificacoes");

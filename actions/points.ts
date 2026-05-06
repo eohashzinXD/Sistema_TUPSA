@@ -10,6 +10,7 @@ import {
 } from "@/lib/content-visibility";
 import { hasPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
+import { sendPushNotificationToUsers } from "@/lib/push-notifications";
 import {
   createPointSchema,
   type CreatePointInput,
@@ -94,6 +95,13 @@ async function notifyPointPublished({
         }
       }
     }
+  });
+
+  await sendPushNotificationToUsers(recipientUserIds, {
+    title: "Novo ponto cantado",
+    message: title,
+    type: NotificationType.POINT,
+    link: `/dashboard/pontos/${pointId}`
   });
 }
 

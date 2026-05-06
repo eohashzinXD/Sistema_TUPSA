@@ -10,6 +10,7 @@ import {
 } from "@/lib/content-visibility";
 import { hasPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
+import { sendPushNotificationToUsers } from "@/lib/push-notifications";
 import {
   createStudyMaterialSchema,
   type CreateStudyMaterialInput,
@@ -95,6 +96,13 @@ async function notifyStudyPublished({
         }
       }
     }
+  });
+
+  await sendPushNotificationToUsers(recipientUserIds, {
+    title: "Novo material de estudo",
+    message: title,
+    type: NotificationType.STUDY,
+    link: `/dashboard/estudos/${materialId}`
   });
 }
 
