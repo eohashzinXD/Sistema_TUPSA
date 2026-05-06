@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { hasPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 
-const boardRoles = ["pai-de-santo", "pai-pequeno", "mãe-pequena"];
+const boardRoles = ["pai-de-santo", "pai-pequeno", "mãe-pequena", "tesouraria", "Diretores Gerais", "Secretaria"];
 
 function formatPhone(phone: string | null) {
   return phone ?? "Não informado";
