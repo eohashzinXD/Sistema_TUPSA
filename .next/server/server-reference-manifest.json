@@ -1,22 +1,110 @@
 {
   "node": {
-    "522a0a26a25f786f73ec41f71a4902aaab78a0fe": {
+    "62570a9e56848bf82cf53ba819d6b214a9d3cc4c": {
       "workers": {
-        "app/dashboard/aniversariantes/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fauth.ts%22%2C%5B%22logoutAction%22%2C%22loginAction%22%5D%5D%5D&__client_imported__=!"
+        "app/dashboard/usuarios/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Fapp%2Fdashboard%2Fusuarios%2Fpage.tsx%22%2C%5B%22%24%24ACTION_1%22%2C%22%24%24ACTION_0%22%5D%5D%2C%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fusers.ts%22%2C%5B%22createUserAction%22%2C%22deleteUserAction%22%2C%22deactivateUserAction%22%2C%22updateUserAction%22%5D%5D%2C%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fauth.ts%22%2C%5B%22logoutAction%22%2C%22loginAction%22%5D%5D%5D&__client_imported__=!"
       },
       "layer": {
-        "app/dashboard/aniversariantes/page": "rsc"
+        "app/dashboard/usuarios/page": "rsc"
+      }
+    },
+    "bf939558131fc1d44e76b876fe8061dbd271de6b": {
+      "workers": {
+        "app/dashboard/usuarios/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Fapp%2Fdashboard%2Fusuarios%2Fpage.tsx%22%2C%5B%22%24%24ACTION_1%22%2C%22%24%24ACTION_0%22%5D%5D%2C%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fusers.ts%22%2C%5B%22createUserAction%22%2C%22deleteUserAction%22%2C%22deactivateUserAction%22%2C%22updateUserAction%22%5D%5D%2C%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fauth.ts%22%2C%5B%22logoutAction%22%2C%22loginAction%22%5D%5D%5D&__client_imported__=!"
+      },
+      "layer": {
+        "app/dashboard/usuarios/page": "rsc"
+      }
+    },
+    "001bc6ea38e2b538f1ede231334e6a82fea54505": {
+      "workers": {
+        "app/dashboard/usuarios/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Fapp%2Fdashboard%2Fusuarios%2Fpage.tsx%22%2C%5B%22%24%24ACTION_1%22%2C%22%24%24ACTION_0%22%5D%5D%2C%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fusers.ts%22%2C%5B%22createUserAction%22%2C%22deleteUserAction%22%2C%22deactivateUserAction%22%2C%22updateUserAction%22%5D%5D%2C%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fauth.ts%22%2C%5B%22logoutAction%22%2C%22loginAction%22%5D%5D%5D&__client_imported__=!",
+        "app/dashboard/usuarios/[userId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fusers.ts%22%2C%5B%22createUserAction%22%2C%22deleteUserAction%22%2C%22deactivateUserAction%22%2C%22updateUserAction%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/dashboard/usuarios/page": "rsc",
+        "app/dashboard/usuarios/[userId]/page": "action-browser"
+      }
+    },
+    "368b4e2d7a45dc4cbcf745c26586c187e98330c9": {
+      "workers": {
+        "app/dashboard/usuarios/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Fapp%2Fdashboard%2Fusuarios%2Fpage.tsx%22%2C%5B%22%24%24ACTION_1%22%2C%22%24%24ACTION_0%22%5D%5D%2C%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fusers.ts%22%2C%5B%22createUserAction%22%2C%22deleteUserAction%22%2C%22deactivateUserAction%22%2C%22updateUserAction%22%5D%5D%2C%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fauth.ts%22%2C%5B%22logoutAction%22%2C%22loginAction%22%5D%5D%5D&__client_imported__=!",
+        "app/dashboard/usuarios/[userId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fusers.ts%22%2C%5B%22createUserAction%22%2C%22deleteUserAction%22%2C%22deactivateUserAction%22%2C%22updateUserAction%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/dashboard/usuarios/page": "rsc",
+        "app/dashboard/usuarios/[userId]/page": "action-browser"
+      }
+    },
+    "ad073773eafd58ce54b53640528cbb0701243fd4": {
+      "workers": {
+        "app/dashboard/usuarios/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Fapp%2Fdashboard%2Fusuarios%2Fpage.tsx%22%2C%5B%22%24%24ACTION_1%22%2C%22%24%24ACTION_0%22%5D%5D%2C%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fusers.ts%22%2C%5B%22createUserAction%22%2C%22deleteUserAction%22%2C%22deactivateUserAction%22%2C%22updateUserAction%22%5D%5D%2C%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fauth.ts%22%2C%5B%22logoutAction%22%2C%22loginAction%22%5D%5D%5D&__client_imported__=!",
+        "app/dashboard/usuarios/[userId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fusers.ts%22%2C%5B%22createUserAction%22%2C%22deleteUserAction%22%2C%22deactivateUserAction%22%2C%22updateUserAction%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/dashboard/usuarios/page": "rsc",
+        "app/dashboard/usuarios/[userId]/page": "action-browser"
+      }
+    },
+    "ca9cd7664fae4c64c67a00a4d403c9b9f0649cda": {
+      "workers": {
+        "app/dashboard/usuarios/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Fapp%2Fdashboard%2Fusuarios%2Fpage.tsx%22%2C%5B%22%24%24ACTION_1%22%2C%22%24%24ACTION_0%22%5D%5D%2C%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fusers.ts%22%2C%5B%22createUserAction%22%2C%22deleteUserAction%22%2C%22deactivateUserAction%22%2C%22updateUserAction%22%5D%5D%2C%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fauth.ts%22%2C%5B%22logoutAction%22%2C%22loginAction%22%5D%5D%5D&__client_imported__=!",
+        "app/dashboard/usuarios/[userId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fusers.ts%22%2C%5B%22createUserAction%22%2C%22deleteUserAction%22%2C%22deactivateUserAction%22%2C%22updateUserAction%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/dashboard/usuarios/page": "rsc",
+        "app/dashboard/usuarios/[userId]/page": "action-browser"
+      }
+    },
+    "522a0a26a25f786f73ec41f71a4902aaab78a0fe": {
+      "workers": {
+        "app/dashboard/usuarios/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Fapp%2Fdashboard%2Fusuarios%2Fpage.tsx%22%2C%5B%22%24%24ACTION_1%22%2C%22%24%24ACTION_0%22%5D%5D%2C%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fusers.ts%22%2C%5B%22createUserAction%22%2C%22deleteUserAction%22%2C%22deactivateUserAction%22%2C%22updateUserAction%22%5D%5D%2C%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fauth.ts%22%2C%5B%22logoutAction%22%2C%22loginAction%22%5D%5D%5D&__client_imported__=!",
+        "app/dashboard/usuarios/[userId]/observacoes/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fauth.ts%22%2C%5B%22logoutAction%22%2C%22loginAction%22%5D%5D%5D&__client_imported__=!",
+        "app/dashboard/usuarios/[userId]/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fauth.ts%22%2C%5B%22logoutAction%22%2C%22loginAction%22%5D%5D%5D&__client_imported__=!"
+      },
+      "layer": {
+        "app/dashboard/usuarios/page": "rsc",
+        "app/dashboard/usuarios/[userId]/observacoes/page": "rsc",
+        "app/dashboard/usuarios/[userId]/page": "rsc"
       }
     },
     "e126e1b6bafd6b4d5aa5d5b6eaf48b5c9d1a3cf4": {
       "workers": {
-        "app/dashboard/aniversariantes/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fauth.ts%22%2C%5B%22logoutAction%22%2C%22loginAction%22%5D%5D%5D&__client_imported__=!"
+        "app/dashboard/usuarios/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Fapp%2Fdashboard%2Fusuarios%2Fpage.tsx%22%2C%5B%22%24%24ACTION_1%22%2C%22%24%24ACTION_0%22%5D%5D%2C%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fusers.ts%22%2C%5B%22createUserAction%22%2C%22deleteUserAction%22%2C%22deactivateUserAction%22%2C%22updateUserAction%22%5D%5D%2C%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fauth.ts%22%2C%5B%22logoutAction%22%2C%22loginAction%22%5D%5D%5D&__client_imported__=!",
+        "app/dashboard/usuarios/[userId]/observacoes/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fauth.ts%22%2C%5B%22logoutAction%22%2C%22loginAction%22%5D%5D%5D&__client_imported__=!",
+        "app/dashboard/usuarios/[userId]/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fauth.ts%22%2C%5B%22logoutAction%22%2C%22loginAction%22%5D%5D%5D&__client_imported__=!"
       },
       "layer": {
-        "app/dashboard/aniversariantes/page": "rsc"
+        "app/dashboard/usuarios/page": "rsc",
+        "app/dashboard/usuarios/[userId]/observacoes/page": "rsc",
+        "app/dashboard/usuarios/[userId]/page": "rsc"
+      }
+    },
+    "0c3a2b4af3d290597a1a66f185636162fabd2737": {
+      "workers": {
+        "app/dashboard/usuarios/[userId]/observacoes/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fuser-observations.ts%22%2C%5B%22createUserObservationAction%22%2C%22updateUserObservationAction%22%2C%22deleteUserObservationAction%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/dashboard/usuarios/[userId]/observacoes/page": "action-browser"
+      }
+    },
+    "35d0e719924e531f77d6d343f4bf090277f1d8b0": {
+      "workers": {
+        "app/dashboard/usuarios/[userId]/observacoes/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fuser-observations.ts%22%2C%5B%22createUserObservationAction%22%2C%22updateUserObservationAction%22%2C%22deleteUserObservationAction%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/dashboard/usuarios/[userId]/observacoes/page": "action-browser"
+      }
+    },
+    "e85dfaf6bca28b8a0614c2c779a42b593245a9b3": {
+      "workers": {
+        "app/dashboard/usuarios/[userId]/observacoes/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fhome%2Feohashzin%2FProjetos%2FSistema_TUPSA%2Factions%2Fuser-observations.ts%22%2C%5B%22createUserObservationAction%22%2C%22updateUserObservationAction%22%2C%22deleteUserObservationAction%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/dashboard/usuarios/[userId]/observacoes/page": "action-browser"
       }
     }
   },
   "edge": {},
-  "encryptionKey": "7NbqGuQXLVTsW16Q7w6AoyVPnUHnrhf8oAXo1lOpmSk="
+  "encryptionKey": "5kiNRx96xJl4ucf2PXaWMAaMQaUMZJOMQy5em8prC5w="
 }

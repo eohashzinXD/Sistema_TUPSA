@@ -10,13 +10,16 @@ import posthog from "posthog-js";
 
 import {
   sendNotificationAction,
+  updateNotificationAction,
   type NotificationActionResult
 } from "@/actions/notifications";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import {
+  notificationContentFormSchema,
   sendNotificationSchema,
-  type SendNotificationInput
+  type SendNotificationInput,
+  type UpdateNotificationInput
 } from "@/lib/validations/notifications";
 
 type TargetOption = {
@@ -29,6 +32,8 @@ type NotificationFormProps = {
   roles: TargetOption[];
   groups: TargetOption[];
   users: TargetOption[];
+  defaultValues?: Partial<SendNotificationInput> & { id?: string };
+  mode?: "create" | "edit";
 };
 
 const notificationTypeLabels: Record<NotificationType, string> = {
@@ -48,20 +53,25 @@ const targetTypeLabels: Record<ContentTargetType, string> = {
 export function NotificationForm({
   roles,
   groups,
-  users
+  users,
+  defaultValues,
+  mode = "create"
 }: NotificationFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [result, setResult] = useState<NotificationActionResult>({});
+  const isEditing = mode === "edit";
   const form = useForm<SendNotificationInput>({
-    resolver: zodResolver(sendNotificationSchema),
+    resolver: zodResolver(
+      isEditing ? notificationContentFormSchema : sendNotificationSchema
+    ),
     defaultValues: {
-      title: "",
-      message: "",
-      type: NotificationType.INFO,
-      link: "",
-      targetType: ContentTargetType.ALL,
-      targetIds: []
+      title: defaultValues?.title ?? "",
+      message: defaultValues?.message ?? "",
+      type: defaultValues?.type ?? NotificationType.INFO,
+      link: defaultValues?.link ?? "",
+      targetType: defaultValues?.targetType ?? ContentTargetType.ALL,
+      targetIds: defaultValues?.targetIds ?? []
     }
   });
   const targetType = form.watch("targetType");
@@ -76,16 +86,33 @@ export function NotificationForm({
 
   function onSubmit(values: SendNotificationInput) {
     startTransition(async () => {
-      const actionResult = await sendNotificationAction(values);
+      const actionResult =
+        isEditing && defaultValues?.id
+          ? await updateNotificationAction({
+              id: defaultValues.id,
+              title: values.title,
+              message: values.message,
+              type: values.type,
+              link: values.link
+            } as UpdateNotificationInput)
+          : await sendNotificationAction(values);
       setResult(actionResult);
 
       if (actionResult.success) {
-        posthog.capture("notification_sent", {
-          notification_type: values.type,
-          target_type: values.targetType
-        });
+        if (isEditing) {
+          posthog.capture("notification_updated", {
+            notification_type: values.type
+          });
+        } else {
+          posthog.capture("notification_sent", {
+            notification_type: values.type,
+            target_type: values.targetType
+          });
+        }
 
-        form.reset();
+        if (!isEditing) {
+          form.reset();
+        }
         router.refresh();
       }
     });
@@ -94,10 +121,13 @@ export function NotificationForm({
   return (
     <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
       <Card>
-        <CardTitle>Enviar comunicado</CardTitle>
+        <CardTitle>
+          {isEditing ? "Editar comunicado" : "Enviar comunicado"}
+        </CardTitle>
         <CardDescription>
-          Envie uma mensagem manual para todos, papéis, grupos ou usuários
-          específicos.
+          {isEditing
+            ? "Atualize o conteúdo exibido para quem recebeu este comunicado."
+            : "Envie uma mensagem manual para todos, papéis, grupos ou usuários específicos."}
         </CardDescription>
         <div className="mt-6 grid gap-5 md:grid-cols-2">
           <Field label="Título" error={form.formState.errors.title?.message}>
@@ -125,23 +155,25 @@ export function NotificationForm({
               {...form.register("link")}
             />
           </Field>
-          <Field
-            label="Destinatários"
-            error={form.formState.errors.targetType?.message}
-          >
-            <select
-              className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-primary"
-              {...form.register("targetType", {
-                onChange: () => form.setValue("targetIds", [])
-              })}
+          {!isEditing ? (
+            <Field
+              label="Destinatários"
+              error={form.formState.errors.targetType?.message}
             >
-              {Object.entries(targetTypeLabels).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </Field>
+              <select
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-primary"
+                {...form.register("targetType", {
+                  onChange: () => form.setValue("targetIds", [])
+                })}
+              >
+                {Object.entries(targetTypeLabels).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </Field>
+          ) : null}
         </div>
         <div className="mt-5">
           <Field label="Mensagem" error={form.formState.errors.message?.message}>
@@ -152,7 +184,7 @@ export function NotificationForm({
           </Field>
         </div>
       </Card>
-      {targetType !== ContentTargetType.ALL ? (
+      {!isEditing && targetType !== ContentTargetType.ALL ? (
         <Card>
           <CardTitle>Selecionar destinatários</CardTitle>
           <CardDescription>
@@ -200,7 +232,13 @@ export function NotificationForm({
       ) : null}
       <div className="flex justify-end">
         <Button disabled={isPending} type="submit">
-          {isPending ? "Enviando..." : "Enviar comunicado"}
+          {isPending
+            ? isEditing
+              ? "Salvando..."
+              : "Enviando..."
+            : isEditing
+              ? "Salvar alterações"
+              : "Enviar comunicado"}
         </Button>
       </div>
     </form>

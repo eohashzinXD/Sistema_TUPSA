@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/dashboard/aniversariantes/page": [
+    "/dashboard/usuarios/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/dashboard/aniversariantes/page.js"
+      "static/chunks/app/dashboard/usuarios/page.js"
     ],
     "/dashboard/layout": [
       "static/chunks/webpack.js",
@@ -15,6 +15,16 @@
       "static/chunks/main-app.js",
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
+    ],
+    "/dashboard/usuarios/[userId]/observacoes/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/dashboard/usuarios/[userId]/observacoes/page.js"
+    ],
+    "/dashboard/usuarios/[userId]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/dashboard/usuarios/[userId]/page.js"
     ]
   }
 }

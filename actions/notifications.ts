@@ -10,7 +10,9 @@ import { sendPushNotificationToUsers } from "@/lib/push-notifications";
 import {
   notificationRecipientIdSchema,
   sendNotificationSchema,
-  type SendNotificationInput
+  type SendNotificationInput,
+  updateNotificationSchema,
+  type UpdateNotificationInput
 } from "@/lib/validations/notifications";
 
 export type NotificationActionResult = {
@@ -155,4 +157,41 @@ export async function sendNotificationAction(
   revalidatePath("/dashboard");
 
   return { success: "Notificação enviada" };
+}
+
+export async function updateNotificationAction(
+  input: UpdateNotificationInput
+): Promise<NotificationActionResult> {
+  const permission = await ensureCanCreateNotifications();
+  if (!("allowed" in permission)) return permission;
+
+  const parsed = updateNotificationSchema.safeParse(input);
+  if (!parsed.success) {
+    return { error: "Dados inválidos" };
+  }
+
+  const notification = await prisma.notification.findUnique({
+    where: { id: parsed.data.id },
+    select: { id: true }
+  });
+
+  if (!notification) {
+    return { error: "Comunicado não encontrado" };
+  }
+
+  await prisma.notification.update({
+    where: { id: parsed.data.id },
+    data: {
+      title: parsed.data.title,
+      message: parsed.data.message,
+      type: parsed.data.type,
+      link: parsed.data.link
+    }
+  });
+
+  revalidatePath("/dashboard/notificacoes");
+  revalidatePath(`/dashboard/notificacoes/${parsed.data.id}/editar`);
+  revalidatePath("/dashboard");
+
+  return { success: "Comunicado atualizado" };
 }

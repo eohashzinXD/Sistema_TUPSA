@@ -8,6 +8,7 @@ import { UserForm } from "@/components/users/user-form";
 import { orixaOptions, type OrixaCode } from "@/lib/amaci";
 import { hasPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
+import { isSpiritualLeadership } from "@/lib/spiritual-leadership";
 import {
   leftObligationOptions,
   rightObligationOptions
@@ -136,7 +137,10 @@ export default async function EditUserPage({ params }: EditUserPageProps) {
     return <AccessDenied />;
   }
 
-  const data = await getFormData(params.userId);
+  const [data, canManageObservations] = await Promise.all([
+    getFormData(params.userId),
+    isSpiritualLeadership(session.user.id)
+  ]);
   if (!data.user) notFound();
 
   return (
@@ -150,12 +154,22 @@ export default async function EditUserPage({ params }: EditUserPageProps) {
           Editar usuário
         </h1>
         </div>
-        <Link
-          className={cn(buttonVariants({ variant: "outline" }), "shrink-0")}
-          href={`/dashboard/usuarios/${data.user.id}/relatorio`}
-        >
-          Relatorio PDF
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          {canManageObservations ? (
+            <Link
+              className={cn(buttonVariants({ variant: "outline" }), "shrink-0")}
+              href={`/dashboard/usuarios/${data.user.id}/observacoes`}
+            >
+              Observações
+            </Link>
+          ) : null}
+          <Link
+            className={cn(buttonVariants({ variant: "outline" }), "shrink-0")}
+            href={`/dashboard/usuarios/${data.user.id}/relatorio`}
+          >
+            Relatorio PDF
+          </Link>
+        </div>
       </section>
       <UserForm
         defaultValues={{

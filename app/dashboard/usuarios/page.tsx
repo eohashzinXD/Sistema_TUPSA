@@ -8,6 +8,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { hasPermission } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
+import { isSpiritualLeadership } from "@/lib/spiritual-leadership";
 import { cn } from "@/lib/utils";
 
 async function getUsers() {
@@ -84,7 +85,10 @@ export default async function UsersPage() {
     return <AccessDenied />;
   }
 
-  const users = await getUsers();
+  const [users, canManageObservations] = await Promise.all([
+    getUsers(),
+    isSpiritualLeadership(session.user.id)
+  ]);
 
   return (
     <div className="space-y-6">
@@ -260,6 +264,14 @@ export default async function UsersPage() {
                 >
                   Relatorio PDF
                 </Link>
+                {canManageObservations ? (
+                  <Link
+                    className={cn(buttonVariants({ variant: "outline" }))}
+                    href={`/dashboard/usuarios/${user.id}/observacoes`}
+                  >
+                    Observações
+                  </Link>
+                ) : null}
                 <Link
                   className={cn(buttonVariants({ variant: "outline" }))}
                   href={`/dashboard/usuarios/${user.id}`}

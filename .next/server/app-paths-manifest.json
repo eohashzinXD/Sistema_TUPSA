@@ -1,3 +1,5 @@
 {
-  "/dashboard/aniversariantes/page": "app/dashboard/aniversariantes/page.js"
+  "/dashboard/usuarios/page": "app/dashboard/usuarios/page.js",
+  "/dashboard/usuarios/[userId]/observacoes/page": "app/dashboard/usuarios/[userId]/observacoes/page.js",
+  "/dashboard/usuarios/[userId]/page": "app/dashboard/usuarios/[userId]/page.js"
 }

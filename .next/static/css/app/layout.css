@@ -669,6 +669,9 @@ video {
 .min-h-0 {
   min-height: 0px;
 }
+.min-h-28 {
+  min-height: 7rem;
+}
 .min-h-32 {
   min-height: 8rem;
 }

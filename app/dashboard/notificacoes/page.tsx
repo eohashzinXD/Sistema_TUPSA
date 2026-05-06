@@ -31,6 +31,7 @@ async function getNotifications(userId: string) {
       notification: {
         select: {
           title: true,
+          id: true,
           message: true,
           type: true,
           link: true,
@@ -126,14 +127,24 @@ export default async function NotificationsPage() {
                   Enviado por {recipient.notification.createdBy.name} em{" "}
                   {recipient.notification.createdAt.toLocaleDateString("pt-BR")}
                 </p>
-                {recipient.notification.link ? (
-                  <Link
-                    className="mt-3 inline-flex text-sm font-medium text-primary hover:underline"
-                    href={recipient.notification.link}
-                  >
-                    Abrir link
-                  </Link>
-                ) : null}
+                <div className="mt-3 flex flex-wrap gap-3">
+                  {recipient.notification.link ? (
+                    <Link
+                      className="inline-flex text-sm font-medium text-primary hover:underline"
+                      href={recipient.notification.link}
+                    >
+                      Abrir link
+                    </Link>
+                  ) : null}
+                  {canCreate ? (
+                    <Link
+                      className="inline-flex text-sm font-medium text-primary hover:underline"
+                      href={`/dashboard/notificacoes/${recipient.notification.id}/editar`}
+                    >
+                      Editar
+                    </Link>
+                  ) : null}
+                </div>
               </div>
               {!recipient.readAt ? (
                 <form

@@ -84,6 +84,8 @@ model User {
   notificationsCreated     Notification[]          @relation("NotificationCreatedBy")
   notificationRecipients   NotificationRecipient[]
   pushSubscriptions        PushSubscription[]
+  observations             UserObservation[]       @relation("UserObservationTarget")
+  observationsAuthored     UserObservation[]       @relation("UserObservationAuthor")
 
   @@map("users")
 }
@@ -345,4 +347,19 @@ model PushSubscription {
 
   @@index([userId])
   @@map("push_subscriptions")
+}
+
+model UserObservation {
+  id        String   @id @default(cuid())
+  userId    String
+  authorId  String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation("UserObservationTarget", fields: [userId], references: [id], onDelete: Cascade)
+  author    User     @relation("UserObservationAuthor", fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([userId, createdAt])
+  @@index([authorId])
+  @@map("user_observations")
 }
