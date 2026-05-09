@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
+import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 import path from "path";
 
@@ -10,6 +11,7 @@ import { getPostHogClient } from "@/lib/posthog-server";
 const MAX_STUDY_FILE_SIZE = 10 * 1024 * 1024;
 const STUDY_UPLOAD_DIR = path.join(process.cwd(), "public", "uploads", "studies");
 const STUDY_UPLOAD_PUBLIC_PATH = "/uploads/studies";
+const STUDY_BLOB_PREFIX = "studies";
 const allowedStudyFileExtensions = new Set([
   ".doc",
   ".docx",
@@ -33,6 +35,30 @@ function getSafeStudyFileExtension(fileName: string) {
   }
 
   return extension;
+}
+
+async function uploadStudyFile(file: File, fileName: string) {
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    const blob = await put(`${STUDY_BLOB_PREFIX}/${fileName}`, file, {
+      access: "public",
+      addRandomSuffix: false
+    });
+
+    return blob.url;
+  }
+
+  if (process.env.VERCEL) {
+    throw new Error("BLOB_READ_WRITE_TOKEN_NOT_CONFIGURED");
+  }
+
+  await mkdir(STUDY_UPLOAD_DIR, { recursive: true });
+
+  const filePath = path.join(STUDY_UPLOAD_DIR, fileName);
+  const bytes = Buffer.from(await file.arrayBuffer());
+
+  await writeFile(filePath, bytes);
+
+  return `${STUDY_UPLOAD_PUBLIC_PATH}/${fileName}`;
 }
 
 export async function POST(request: Request) {
@@ -75,13 +101,27 @@ export async function POST(request: Request) {
     );
   }
 
-  await mkdir(STUDY_UPLOAD_DIR, { recursive: true });
-
   const fileName = `${Date.now()}-${randomUUID()}${extension}`;
-  const filePath = path.join(STUDY_UPLOAD_DIR, fileName);
-  const bytes = Buffer.from(await file.arrayBuffer());
+  let fileUrl: string;
 
-  await writeFile(filePath, bytes);
+  try {
+    fileUrl = await uploadStudyFile(file, fileName);
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === "BLOB_READ_WRITE_TOKEN_NOT_CONFIGURED"
+    ) {
+      return NextResponse.json(
+        { error: "Storage de arquivos não configurado no ambiente" },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: "Não foi possível enviar o arquivo" },
+      { status: 500 }
+    );
+  }
 
   const posthog = getPostHogClient();
   posthog.capture({
@@ -96,6 +136,6 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     success: "Arquivo enviado",
-    url: `${STUDY_UPLOAD_PUBLIC_PATH}/${fileName}`
+    url: fileUrl
   });
 }
